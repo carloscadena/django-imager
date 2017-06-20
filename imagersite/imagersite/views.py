@@ -1,5 +1,8 @@
 """."""
-from django.http import HttpResponse
+from django.shortcuts import render
+
 
 def home_view(request):
-    pass
+    """View for home page."""
+    context = {'stuff': 'somestuff'}
+    return render(request, 'imagersite/home.html', context=context)
