@@ -7,7 +7,7 @@ from django.dispatch import receiver
 
 
 class ImagerProfile(models.Model):
-    """A profile for users to our application"""
+    """A profile for users to our application."""
 
     user = models.OneToOneField(User)
     location = models.CharField(max_length=50)
@@ -30,18 +30,20 @@ class ImagerProfile(models.Model):
     is_active = models.BooleanField(default=True)
 
     def active(self):
-        """
-        Provides full query functionality limited to profiles for users
-        who are active (allowed to log in)
+        """Provide full query functionality.
+
+        limited to profiles for users who are active (allowed to log in)
         """
         return self.objects.all().exclude(is_active=False)
 
     def __repr__(self):
+        """Print displays username."""
         return self.user.username
 
 
 @receiver(post_save, sender=User)
 def make_profile_for_new_user(sender, **kwargs):
+    """All users get profile added."""
     if kwargs['created']:
         new_profile = ImagerProfile(
             user=kwargs['instance']
