@@ -1,16 +1,25 @@
-from django.db import models
+"""Django Models Modules."""
 from django.contrib.auth.models import User
+from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils.encodeing import python_2_unicode_compatible
 
-# Create your models here.
+
+class ImagerActiveProfile(models.Manager):
+    """."""
+
+    def get_queryset(self):
+        """."""
+        super(ImagerActiveProfile, self).get_queryset().filter(is_active=True)
 
 
+@python_2_unicode_compatible
 class ImagerProfile(models.Model):
     """A profile for users to our application."""
 
-    user = models.OneToOneField(User)
-    location = models.CharField(max_length=50)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    location = models.CharField(max_length=50, null=True, blank=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     birthday = models.DateField(null=True, blank=True)
     LEVELS = (
@@ -21,24 +30,36 @@ class ImagerProfile(models.Model):
     photog_level = models.CharField(  # required max length?
         choices=LEVELS,
         default='Hobbyist',
-        max_length=144
+        max_length=25
     )
     website = models.URLField()
     headline = models.CharField(
-        max_length=144
+        max_length=144,
+        null=True,
+        Blank=True
     )
-    is_active = models.BooleanField(default=True)
+    objects = models.Manager()
+    active = ImagerActiveProfile()
 
-    def active(self):
-        """Provide full query functionality.
+    @property
+    def is_active(self):
+        """."""
+        return self.user.is_active
 
-        limited to profiles for users who are active (allowed to log in)
-        """
-        return self.objects.all().exclude(is_active=False)
+        # is_active = models.BooleanField(default=True)
 
+    # def active(self):
+    #     """Provide full query functionality.
+    #
+    #     limited to profiles for users who are active (allowed to log in)
+    #     """
+    #     return self.objects.all().exclude(is_active=False)
+    #
     def __repr__(self):
         """Print displays username."""
-        return self.user.username
+        return """
+User name: {}
+""".format(self.user.username)
 
 
 @receiver(post_save, sender=User)
