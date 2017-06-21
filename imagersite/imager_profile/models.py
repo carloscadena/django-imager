@@ -11,7 +11,7 @@ class ImagerActiveProfile(models.Manager):
 
     def get_queryset(self):
         """."""
-        super(ImagerActiveProfile, self).get_queryset().filter(is_active=True)
+        return super(ImagerActiveProfile, self).get_queryset().filter(is_active=True)
 
 
 @python_2_unicode_compatible
@@ -27,7 +27,7 @@ class ImagerProfile(models.Model):
         ('hobbyist', 'Hobbyist'),
         ('professional', 'Professional')
     )
-    photog_level = models.CharField(  # required max length?
+    photog_level = models.CharField(
         choices=LEVELS,
         default='Hobbyist',
         max_length=25
@@ -46,15 +46,6 @@ class ImagerProfile(models.Model):
         """."""
         return self.user.is_active
 
-        # is_active = models.BooleanField(default=True)
-
-    # def active(self):
-    #     """Provide full query functionality.
-    #
-    #     limited to profiles for users who are active (allowed to log in)
-    #     """
-    #     return self.objects.all().exclude(is_active=False)
-    #
     def __repr__(self):
         """Print displays username."""
         return """
