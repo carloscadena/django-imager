@@ -1,9 +1,11 @@
-from django.test import TestCase
+"""."""
+from bs4 import BeautifulSoup as soup
 from django.contrib.auth.models import User
+from django.test import TestCase, Client, RequestFactory
+from django.urls import reverse
 import factory
 from imager_profile.models import ImagerProfile
-
-# Create your tests here.
+from imagersite.views import home_view
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -67,3 +69,41 @@ class ProfileTestCase(TestCase):
     def test_is_active_method(self):
         """Test newly created users are active."""
         self.assertTrue(ImagerProfile.objects.first().is_active is True)
+
+
+# class ProfileViewTests(TestCase):
+#     """."""
+#
+#     def setUp(self):
+#         """."""
+#         self.client = Client()
+#         self.req_factory = RequestFactory()
+#
+#     # must make link on web page for test to work
+#     def test_link_button_on_home_page_appears(self):
+#         """."""
+#         response = self.client(reverse('home'))
+#         self.assertTrue(b'a href="/"' in response.content)
+#
+#     def test_home_view_responds_200(self):
+#         """."""
+#         get_req = self.req_factory('/foo')
+#         response = home_view(get_req)
+#         self.assertTrue(response.status_code == 200)
+#
+#     def test_if_user_isnt_authenticated_show_login(self):
+#         """."""
+#         pass
+#
+#     def test_if_user_is_authenticated_show_logout(self):
+#         """."""
+#         bob = User(username='bob')
+#         bob.set_password('testtest123')
+#         bob.save()
+#
+#         pass
+#
+#     def test_if_user_logs_out_no_longer_aunthenticated(self):
+#         """."""
+#         response = self.client.get('', follow=True)
+#         pass
