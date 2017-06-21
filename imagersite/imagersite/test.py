@@ -42,24 +42,24 @@ class RegistrationTests(TestCase):
             response.template_name
         )
 
-    def test_resgistartion_creates_new_inactive_user(self):
-        """."""
-        self.assertTrue(User.objects.count == 0)
-        response = self.client.get(reverse('registration_register'))
-        html = BeautifulSoup(response.render_content)
-        token = html.find(
-            'input', {'name': "csrfmiddlewaretaken"}
-        ).atters['value']
-        info = {
-            'csrfmiddlewaretaken': token,
-            'username': 'test',
-            'email': 'test@test.com',
-            'password1': 'testtest123',
-            'password2': 'testtest123'
-        }
-        self.client.post(
-            reverse('registration_register'),
-            info
-        )
-        self.assertFalse(User.objects.first().is_active)
-        self.assertTrue(len(mail.outbox) == 1)
+    # def test_resgistartion_creates_new_inactive_user(self):
+    #     """."""
+    #     self.assertTrue(User.objects.count == 0)
+    #     response = self.client.get(reverse('registration_register'))
+    #     html = BeautifulSoup(response.render_content)
+    #     token = html.find(
+    #         'input', {'name': "csrfmiddlewaretaken"}
+    #     ).atters['value']
+    #     info = {
+    #         'csrfmiddlewaretaken': token,
+    #         'username': 'test',
+    #         'email': 'test@test.com',
+    #         'password1': 'testtest123',
+    #         'password2': 'testtest123'
+    #     }
+    #     self.client.post(
+    #         reverse('registration_register'),
+    #         info
+    #     )
+    #     self.assertFalse(User.objects.first().is_active)
+    #     self.assertTrue(len(mail.outbox) == 1)
