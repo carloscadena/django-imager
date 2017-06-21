@@ -1,5 +1,8 @@
 {% extends 'imagersite/base.html' %}
 {% load static %}
+{% if user.is_authenticated %}
+<h1>Authenticated</h1>
+{% endif %}
 {% block content %}
 <h1>hello hello</h1>
 <div>{{ stuff }}</div>
