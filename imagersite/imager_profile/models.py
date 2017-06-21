@@ -1,5 +1,6 @@
 """Django Models Modules."""
 from django.contrib.auth.models import User
+from friends.models import Friend
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -18,7 +19,7 @@ class ImagerActiveProfile(models.Manager):
 class ImagerProfile(models.Model):
     """A profile for users to our application."""
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     location = models.CharField(max_length=50, null=True, blank=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     birthday = models.DateField(null=True, blank=True)
@@ -40,6 +41,7 @@ class ImagerProfile(models.Model):
     )
     objects = models.Manager()
     active = ImagerActiveProfile()
+    friendsthings = model.ManyToManyField(Friend, related_name="friend")
 
     @property
     def is_active(self):
