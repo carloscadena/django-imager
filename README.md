@@ -1,4 +1,4 @@
-# Django-Imager [![Build Status](https://travis-ci.org/carloscadena/django-imager.svg?branch=master)](https://travis-ci.org/carloscadena/django-imager)
+# Django-Imager [![Build Status](https://travis-ci.org/carloscadena/django-imager.svg?branch=master)](https://travis-ci.org/carloscadena/django-imager) [![Coverage Status](https://coveralls.io/repos/github/carloscadena/django-imager/badge.svg?branch=master)](https://coveralls.io/github/carloscadena/django-imager?branch=master)
 
 Simple image management website using Django
 
