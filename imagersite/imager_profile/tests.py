@@ -7,6 +7,7 @@ from imager_profile.models import ImagerProfile
 
 
 class UserFactory(factory.django.DjangoModelFactory):
+    """Setting up users for tests."""
     class Meta:
         model = User
     username = factory.Sequence(lambda n: "user{}".format(n))
@@ -15,80 +16,54 @@ class UserFactory(factory.django.DjangoModelFactory):
     )
 
 
-# class ImagerFactory(factory.django.DjangoModelFactory):
-#     class Meta:
-#         model = ImagerProfile
-#     location = factory.Faker('state')
-#     creation_date = factory.Faker('')
-#     birthday = models.DateField(null=True, blank=True)
-#     LEVELS = (
-#         ('beginner', 'Beginner'),
-#         ('hobbyist', 'Hobbyist'),
-#         ('professional', 'Professional')
-#     )
-#     photog_level = models.CharField(  # required max length?
-#         choices=LEVELS,
-#         default='Hobbyist',
-#         max_length=144
-#     )
-#     website = models.URLField()
-#     headline = factory.Faker(
-#         max_length=144
-#     )
-#     is_active = models.BooleanField(default=True)
-
-
 class ProfileTestCase(TestCase):
     """."""
     def setUp(self):
-        # imager = ImagerFactory.create()
-        user = UserFactory.create()
-        # imager.save()
-        user.save()
-        self.user = user
+        users = [UserFactory.create() for _ in range(20)]
+        self.users = users
 
     def test_every_profile_must_have_a_user(self):
+        """Test that every profile has a user."""
         with self.assertRaises(Exception):
             imager = ImagerProfile()
             imager.save()
 
     def test_profile_with_user_prints_username(self):
+        """Test that profile with user prints username."""
         a_profile = ImagerProfile.objects.first()
         self.assertTrue(str(a_profile), a_profile.user.username)
 
     def test_new_user_has_a_profile(self):
-        """."""
+        """Test new user has a profile."""
         user = UserFactory.create()
         profile = ImagerProfile.objects.last()
         self.assertTrue(profile.user == user)
 
-
     def test_profile_with_user_photog_level_beginner(self):
-        imager = ImagerProfile()
-        imager.user = self.user
-        imager.photog_level = 'Beginner'
-        imager.save()
-        self.assertEqual(imager.photog_level, 'Beginner')
-
+        """Test that photography level could be begginer."""
+        profile = ImagerProfile.objects.last()
+        profile.photog_level = "Beginner"
+        profile.save()
+        self.assertEqual(profile.photog_level, 'Beginner')
 
     def test_profile_with_user_photog_level_hobbyist(self):
-        imager = ImagerProfile()
-        imager.user = self.user
-        imager.photog_level = 'Hobbyist'
-        imager.save()
-        self.assertEqual(imager.photog_level, 'Hobbyist')
+        """Test that photography level could be hobbyist."""
+        profile = ImagerProfile.objects.last()
+        profile.photog_level = "Hobbyist"
+        profile.save()
+        self.assertEqual(profile.photog_level, 'Hobbyist')
 
     def test_profile_with_user_photog_level_professional(self):
-        imager = ImagerProfile()
-        imager.user = self.user
-        imager.photog_level = 'Professional'
-        imager.save()
-        self.assertEqual(imager.photog_level, 'Professional')
+        """Test that photography level could be professional."""
+        profile = ImagerProfile.objects.last()
+        profile.photog_level = "Professional"
+        profile.save()
+        self.assertEqual(profile.photog_level, 'Professional')
 
-    # Should fail? Need clarification
-    def test_profile_with_user_photog_level_bad_data(self):
-        imager = ImagerProfile()
-        imager.user = self.user
-        imager.photog_level = 'something'
-        imager.save()
-        self.assertEqual(imager.photog_level, 'something')
+    def test_profiles_equals_users(self):
+        """Every created user has a profile."""
+        self.assertTrue(ImagerProfile.objects.count() == 20)
+
+    def test_is_active_method(self):
+        """Test newly created users are active."""
+        self.assertTrue(ImagerProfile.objects.first().is_active is True)
