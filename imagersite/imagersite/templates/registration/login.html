@@ -1,5 +1,18 @@
 {% extends 'imagersite/base.html' %}
 
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+
+{# Read the documentation for more information #}
+
 {% block title %}Login{% endblock %}
 
 {% block content %}
@@ -7,6 +20,7 @@
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
+    {% bootstrap_form form %}
     <button type="submit">Login</button>
   </form>
 {% endblock %}
