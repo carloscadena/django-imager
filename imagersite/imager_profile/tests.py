@@ -127,3 +127,4 @@ class ProfileViewTests(TestCase):
         Test that the same amount of users
         and profiles have been created in db.
         """
+        pass
