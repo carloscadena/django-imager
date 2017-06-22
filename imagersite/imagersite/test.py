@@ -1,6 +1,7 @@
 """."""
 from bs4 import BeautifulSoup
 from django.contrib.auth.models import User
+from django.core import mail
 from django.test import Client
 from django.test import RequestFactory
 from django.test import TestCase
@@ -42,24 +43,25 @@ class RegistrationTests(TestCase):
             response.template_name
         )
 
-    # def test_resgistartion_creates_new_inactive_user(self):
-    #     """."""
-    #     self.assertTrue(User.objects.count == 0)
-    #     response = self.client.get(reverse('registration_register'))
-    #     html = BeautifulSoup(response.render_content)
-    #     token = html.find(
-    #         'input', {'name': "csrfmiddlewaretaken"}
-    #     ).atters['value']
-    #     info = {
-    #         'csrfmiddlewaretaken': token,
-    #         'username': 'test',
-    #         'email': 'test@test.com',
-    #         'password1': 'testtest123',
-    #         'password2': 'testtest123'
-    #     }
-    #     self.client.post(
-    #         reverse('registration_register'),
-    #         info
-    #     )
-    #     self.assertFalse(User.objects.first().is_active)
-    #     self.assertTrue(len(mail.outbox) == 1)
+    def test_resgistartion_creates_new_inactive_user(self):
+        """."""
+        self.assertTrue(User.objects.count() == 0)
+        response = self.client.get(reverse('registration_register'))
+        html = BeautifulSoup(response.rendered_content, "html.parser")
+        # import pdb; pdb.set_trace()
+        token = html.find(
+            'input', {'name': "csrfmiddlewaretoken"}
+        ).attrs['value']
+        info = {
+            'csrfmiddlewaretoken': token,
+            'username': 'test',
+            'email': 'test@test.com',
+            'password1': 'testtest123',
+            'password2': 'testtest123'
+        }
+        self.client.post(
+            reverse('registration_register'),
+            info
+        )
+        self.assertFalse(User.objects.first().is_active)
+        self.assertTrue(len(mail.outbox) == 1)

@@ -1,5 +1,5 @@
 """."""
-from bs4 import BeautifulSoup as soup
+# from bs4 import BeautifulSoup as soup
 from django.contrib.auth.models import User
 from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse
@@ -71,39 +71,52 @@ class ProfileTestCase(TestCase):
         self.assertTrue(ImagerProfile.objects.first().is_active is True)
 
 
-# class ProfileViewTests(TestCase):
-#     """."""
-#
-#     def setUp(self):
-#         """."""
-#         self.client = Client()
-#         self.req_factory = RequestFactory()
-#
-#     # must make link on web page for test to work
-#     def test_link_button_on_home_page_appears(self):
-#         """."""
-#         response = self.client(reverse('home'))
-#         self.assertTrue(b'a href="/"' in response.content)
-#
-#     def test_home_view_responds_200(self):
-#         """."""
-#         get_req = self.req_factory('/foo')
-#         response = home_view(get_req)
-#         self.assertTrue(response.status_code == 200)
-#
-#     def test_if_user_isnt_authenticated_show_login(self):
-#         """."""
-#         pass
-#
-#     def test_if_user_is_authenticated_show_logout(self):
-#         """."""
-#         bob = User(username='bob')
-#         bob.set_password('testtest123')
-#         bob.save()
-#
-#         pass
-#
-#     def test_if_user_logs_out_no_longer_aunthenticated(self):
-#         """."""
-#         response = self.client.get('', follow=True)
-#         pass
+class ProfileViewTests(TestCase):
+    """."""
+
+    def setUp(self):
+        """."""
+        self.client = Client()
+        self.req_factory = RequestFactory()
+
+    # # must make link on web page for test to work
+    # def test_link_button_on_home_page_appears(self):
+    #     """."""
+    #     response = self.client(reverse('home'))
+    #     self.assertTrue(b'a href="/"' in response.content)
+
+    def test_home_view_responds_200(self):
+        """."""
+        get_req = self.req_factory.get('/foo')
+        response = home_view(get_req)
+        self.assertTrue(response.status_code == 200)
+
+    def test_if_user_isnt_authenticated_shows_login(self):
+        """."""
+        response = self.client.get(reverse('home'))
+        self.assertTrue(b'login' in response.content.lower())
+
+    def test_if_user_is_authenticated_shows_logout(self):
+        """."""
+        test_bob = User(username='bob')
+        test_bob.set_password('bobberton')
+        test_bob.save()
+        self.client.post(
+            reverse('login'),
+            {'username': 'bob', 'password': 'bobberton'}
+        )
+        response = self.client.get(reverse('home'))
+        self.assertFalse(b'login' in response.content.lower())
+        self.assertTrue(b'logout' in response.content.lower())
+
+    def test_if_user_is_authenticated_and_logout_no_longer_authenticated(self):
+        """."""
+        test_bob = User(username='bob')
+        test_bob.set_password('bobberton')
+        test_bob.save()
+        self.client.post(
+            reverse('login'),
+            {'username': 'bob', 'password': 'bobberton'}
+        )
+        response = self.client.get(reverse('logout'), follow=True)
+        self.assertTrue(b'login' in response.content.lower())
