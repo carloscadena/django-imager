@@ -1,4 +1,4 @@
-"""."""
+"""Testing suite for Django-Imager"""
 # from bs4 import BeautifulSoup as soup
 from django.contrib.auth.models import User
 from django.test import TestCase, Client, RequestFactory
@@ -19,8 +19,9 @@ class UserFactory(factory.django.DjangoModelFactory):
 
 
 class ProfileTestCase(TestCase):
-    """."""
+    """Test suite for creating new users."""
     def setUp(self):
+        """Set up users for testing."""
         users = [UserFactory.create() for _ in range(20)]
         self.users = users
 
@@ -72,10 +73,10 @@ class ProfileTestCase(TestCase):
 
 
 class ProfileViewTests(TestCase):
-    """."""
+    """A class to run tests on the profile view."""
 
     def setUp(self):
-        """."""
+        """Set up for profile view tests."""
         self.client = Client()
         self.req_factory = RequestFactory()
 
@@ -86,18 +87,18 @@ class ProfileViewTests(TestCase):
     #     self.assertTrue(b'a href="/"' in response.content)
 
     def test_home_view_responds_200(self):
-        """."""
+        """Test that the home view returns a status code of 200."""
         get_req = self.req_factory.get('/foo')
         response = home_view(get_req)
         self.assertTrue(response.status_code == 200)
 
     def test_if_user_isnt_authenticated_shows_login(self):
-        """."""
+        """Test that login is available when user isn't authenticated."""
         response = self.client.get(reverse('home'))
         self.assertTrue(b'login' in response.content.lower())
 
     def test_if_user_is_authenticated_shows_logout(self):
-        """."""
+        """Test that logout is available when user is logged in."""
         test_bob = User(username='bob')
         test_bob.set_password('bobberton')
         test_bob.save()
@@ -110,7 +111,7 @@ class ProfileViewTests(TestCase):
         self.assertTrue(b'logout' in response.content.lower())
 
     def test_if_user_is_authenticated_and_logout_no_longer_authenticated(self):
-        """."""
+        """Test that logout properly logs out the user."""
         test_bob = User(username='bob')
         test_bob.set_password('bobberton')
         test_bob.save()
@@ -120,3 +121,9 @@ class ProfileViewTests(TestCase):
         )
         response = self.client.get(reverse('logout'), follow=True)
         self.assertTrue(b'login' in response.content.lower())
+
+    def test_no_of_users_equals_no_of_profiles(self):
+        """
+        Test that the same amount of users
+        and profiles have been created in db.
+        """

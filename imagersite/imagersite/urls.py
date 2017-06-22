@@ -25,5 +25,5 @@ urlpatterns = [
     url(r'^$', home_view, name='home'),
     url(r'^login/$', auth_views.login, name='login'),
     url(r'^logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
-    url(r'^accounts/', include('registration.backends.hmac.urls'))
+    url(r'^accounts/', include('registration.backends.hmac.urls')),
 ]

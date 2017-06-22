@@ -14,13 +14,15 @@
 {# Read the documentation for more information #}
 
 {% block title %}Login{% endblock %}
-
+{% block nav-bar%}
+    <a href="{% url 'home' %}" class="btn btn-primary btn-lg">Home</a>
+{% endblock %}
 {% block content %}
   <h2>Login</h2>
   <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
     {% bootstrap_form form %}
-    <button type="submit">Login</button>
+    <button type="submit" class="btn btn-primary btn-lg">Login</button>
+    <a href="{% url 'registration_register' %}" class="btn btn-primary btn-lg">Register</a>
   </form>
 {% endblock %}

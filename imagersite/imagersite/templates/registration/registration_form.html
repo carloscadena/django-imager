@@ -1,5 +1,8 @@
 {% extends 'imagersite/base.html' %}
 
+{% block nav-bar%}
+    <a href="{% url 'home' %}" class="btn btn-primary btn-lg">Home</a>
+{% endblock %}
 {% block content %}
   <h1>Register</h1>
   <form method="post">
