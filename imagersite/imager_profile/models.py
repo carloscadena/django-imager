@@ -51,7 +51,7 @@ class ImagerProfile(models.Model):
         return self.user.is_active
 
     def __str__(self):
-        """Show string."""
+        """Print displays username."""
         return """
 User name: {}
 """.format(self.user.username)
