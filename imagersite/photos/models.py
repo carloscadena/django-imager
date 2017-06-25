@@ -30,6 +30,12 @@ class Photo(models.Model):
     def __repr__(self):
         return "<Photo: {}>".format(self.title)
 
+    def __str__(self):
+        """Show string."""
+        return """
+Photo: {}
+""".format(self.title)
+
 
 @python_2_unicode_compatible
 class Album(models.Model):
@@ -60,3 +66,9 @@ class Album(models.Model):
                                     related_name='cover',
                                     blank=True,
                                     null=True)
+
+    def __str__(self):
+        """Show string."""
+        return """
+Album: {}
+""".format(self.title)
