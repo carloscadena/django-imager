@@ -101,5 +101,4 @@ ENV/
 .mypy_cache/
 
 # ignore Django media files
-imagersite/MEDIA/*
-!imagersite/MEDIA/test/*
+imagersite/MEDIA/photos
