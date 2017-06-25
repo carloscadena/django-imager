@@ -16,7 +16,7 @@ class Photo(models.Model):
     title = models.CharField(max_length=100, null=True, blank=True)
     description = models.TextField(max_length=256, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='photos', null=True)
+    image = models.ImageField(upload_to='photos')
     date_uploaded = models.DateField(auto_now_add=True)
     date_modified = models.DateField(auto_now=True)
     date_published = models.DateField(auto_now_add=True)
