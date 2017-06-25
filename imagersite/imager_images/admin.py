@@ -5,8 +5,8 @@ from imager_images.models import Album
 
 class AlbumAdmin(admin.ModelAdmin):
 
-    list_display = ('user', 'title', 'published')
-    list_filter = ('user', )
+    list_display = ('profile', 'title', 'published')
+    list_filter = ('profile', )
 
 
 admin.site.register(Album, AlbumAdmin)
@@ -14,8 +14,8 @@ admin.site.register(Album, AlbumAdmin)
 
 class PhotoAdmin(admin.ModelAdmin):
 
-    list_display = ('title', 'user', 'published')
-    list_filter = ('user', )
+    list_display = ('profile', 'title', 'published')
+    list_filter = ('profile', )
 
 
 admin.site.register(Photo, PhotoAdmin)

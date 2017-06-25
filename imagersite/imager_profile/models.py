@@ -11,7 +11,9 @@ class ImagerActiveProfile(models.Manager):
 
     def get_queryset(self):
         """."""
-        return super(ImagerActiveProfile, self).get_queryset().filter(user__is_active=True)
+        return super(ImagerActiveProfile, self).get_queryset().filter(
+            user__is_active=True
+        )
 
 
 @python_2_unicode_compatible
@@ -68,5 +70,4 @@ def make_profile_for_new_user(sender, instance, **kwargs):
     """All users get profile added."""
     if kwargs['created']:
         new_profile = ImagerProfile(user=instance)
-        # import pdb; pdb.set_trace()
         new_profile.save()

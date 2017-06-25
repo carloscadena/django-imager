@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.utils.encoding import python_2_unicode_compatible
 from imager_profile.models import ImagerProfile
 
@@ -15,7 +14,7 @@ PUB_STATUS = (
 class Photo(models.Model):
     title = models.CharField(max_length=100, null=True, blank=True)
     description = models.TextField(max_length=256, null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    profile = models.ForeignKey(ImagerProfile, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='photos')
     date_uploaded = models.DateField(auto_now_add=True)
     date_modified = models.DateField(auto_now=True)
@@ -41,16 +40,7 @@ Photo: {}
 class Album(models.Model):
     """Album class"""
 
-    user = models.ForeignKey(
-        ImagerProfile,
-        related_name="albums",
-        blank=True,
-        null=True
-    )
-
-    contents = models.ManyToManyField(Photo,
-                                      related_name='in_album',
-                                      blank=True)
+    profile = models.ForeignKey(ImagerProfile, on_delete=models.CASCADE)
 
     title = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(max_length=255, blank=True, null=True)
@@ -66,6 +56,12 @@ class Album(models.Model):
                                     related_name='cover',
                                     blank=True,
                                     null=True)
+
+    photos = models.ManyToManyField(
+        Photo,
+        related_name='in_album',
+        blank=True
+    )
 
     def __str__(self):
         """Show string."""

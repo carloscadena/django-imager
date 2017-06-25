@@ -55,7 +55,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'imagersite.urls'
 
-STATIC_URL = '/static/'
 
 TEMPLATES = [
     {
