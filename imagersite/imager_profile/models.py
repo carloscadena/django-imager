@@ -11,14 +11,18 @@ class ImagerActiveProfile(models.Manager):
 
     def get_queryset(self):
         """."""
-        return super(ImagerActiveProfile, self).get_queryset().filter(is_active=True)
+        return super(ImagerActiveProfile, self).get_queryset().filter(user__is_active=True)
 
 
 @python_2_unicode_compatible
 class ImagerProfile(models.Model):
     """A profile for users to our application."""
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name="profile"
+    )
     location = models.CharField(max_length=50, null=True, blank=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     birthday = models.DateField(null=True, blank=True)
@@ -53,17 +57,16 @@ User name: {}
 """.format(self.user.username)
 
     def __repr__(self):
-        """Print displays username."""
+        """Show username."""
         return """
 User name: {}
 """.format(self.user.username)
 
 
 @receiver(post_save, sender=User)
-def make_profile_for_new_user(sender, **kwargs):
+def make_profile_for_new_user(sender, instance, **kwargs):
     """All users get profile added."""
     if kwargs['created']:
-        new_profile = ImagerProfile(
-            user=kwargs['instance']
-        )
+        new_profile = ImagerProfile(user=instance)
+        # import pdb; pdb.set_trace()
         new_profile.save()
