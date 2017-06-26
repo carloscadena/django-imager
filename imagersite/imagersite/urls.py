@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^login/$', auth_views.login, name='login'),
     url(r'^logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
     url(r'^accounts/', include('registration.backends.hmac.urls')),
+    url(r'^profile/', include("imager_profile.urls")),
 ]
 
 
