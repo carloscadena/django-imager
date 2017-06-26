@@ -2,6 +2,7 @@ appnope==0.1.0
 beautifulsoup4==4.6.0
 bs4==0.0.1
 decorator==4.0.11
+coverage==4.4.1
 Django==1.11.2
 django-bootstrap3==8.2.3
 django-registration==2.2
@@ -12,6 +13,7 @@ pexpect==4.2.1
 pickleshare==0.7.4
 Pillow==4.1.1
 prompt-toolkit==1.0.14
+mccabe==0.6.1
 psycopg2==2.7.1
 ptyprocess==0.5.1
 Pygments==2.2.0
