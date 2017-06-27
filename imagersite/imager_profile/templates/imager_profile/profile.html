@@ -1,28 +1,37 @@
 {% extends "imagersite/base.html" %}
 {% load static %}
 
+
+{% block nav-bar %}
+<a href="{% url 'home' %}" class="btn btn-primary">Gallery</a>
+<a href="{% url 'home' %}" class="btn btn-primary btn-lg">Home</a>
+{% endblock %}
+
+
 {% block content %}
-<h2>This is the profile page.</h2>
-<h3>Albums</h3>
-<ul>
-{% for album in albums %}
-    <li>
-    <img src="{{ album.cover_photo.image.url }}" />
-    </li>
-{% endfor %}
-</ul>
+{% if user == profile.user %}
+<h2>Personal information under construction</h2>
+{% endif %}
+<p>Username: {{ profile.user.username }}</p>
+<p>Camera: {{ profile.camera }}</p>
+<p>Photography Level: {{ profile.photog_level }}</p>
 
+<div class="">
 <h3>Photos</h3>
-<ul>
-{% for photo in photos %}
-    <li>
-    <img src="{{ photo.image.url }}" />
-    </li>
-{% endfor %}
-</ul>
-{% endblock %}
+    {% if user == profile.user %}
+    <p>Private: {{ data.photo_private }}<p>
+    {% endif %}
+    <p>Public: {{ data.photo_published }}<p>
+</div>
+<div class="">
+<h3>Albums</h3>
+    {% if user == profile.user %}
+    <p>Private: {{ data.album_private }}<p>
+    {% endif %}
+
+    <p>Public: {{ data.album_published }}<p>
+</div>
 
 
-{% block option_js %}
-    <script type="text/javascript" src="{% static 'script.js' %}"></script>
-{% endblock %}
+
+{% endblock content %}
