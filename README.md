@@ -2,7 +2,7 @@
 
 Simple image management website using Django
 
-##Authors
+## Authors
 -Ely Paysinger
 -Carlos Cadena
 
@@ -33,7 +33,7 @@ Run the server in order to server the app on localhost
 ```
 [Django serves on port 8000](http://localhost:8000)
 
-##Routes
+## Routes
 /
 /login
 /logout
