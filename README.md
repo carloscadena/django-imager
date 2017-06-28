@@ -3,8 +3,8 @@
 Simple image management website using Django
 
 ## Authors
--Ely Paysinger
--Carlos Cadena
+- Ely Paysinger
+- Carlos Cadena
 
 ## To Install:
 Clone this repository
