@@ -34,12 +34,12 @@ Run the server in order to server the app on localhost
 [Django serves on port 8000](http://localhost:8000)
 
 ## Routes
-/
-/login
-/logout
-/account/register
-/profile
-/admin
+- /
+- /login
+- /logout
+- /account/register
+- /profile
+- /admin
 
 ## Models
 ### User
