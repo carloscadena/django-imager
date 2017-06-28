@@ -32,3 +32,44 @@ Run the server in order to server the app on localhost
 (ENV) $ ./manage.py runserver
 ```
 [Django serves on port 8000](http://localhost:8000)
+
+##Routes
+/
+/login
+/logout
+/account/register
+/profile
+/admin
+
+## Models
+### User
+- username
+- email
+- password
+### Profile
+- user
+- location
+- creation date
+- birthday
+- photog_level
+- website
+- headline
+- active
+### Photo
+- title
+- description
+- profile
+- image
+- date_uploaded
+- date_modified
+- date_published
+- published =
+### Album
+- profile
+- title
+- date_uploaded
+- date_modified
+- date_published
+- published
+- cover_photo
+- photos
