@@ -1,13 +1,22 @@
 from django.shortcuts import render
 from imager_images.models import Album, Photo
 from django.contrib.auth.models import User
+from django.shortcuts import redirect
+from django.core.exceptions import ObjectDoesNotExist
 
 
-def profile_view(request, **kwargs):
+def profile_view(request, username=None):
     # import pdb; pdb.set_trace()
     # if kwargs['username']is None:
-    username = kwargs['username']
-    the_user = User.objects.get(username=username)
+    if not username:
+        username = request.user.username
+        if not username:
+            return redirect('home')
+    try:
+        the_user = User.objects.get(username=username)
+    except ObjectDoesNotExist:
+        return redirect('home')
+
     profile = the_user.profile
 
     photo_data = Photo.objects.filter(profile=the_user.profile)
