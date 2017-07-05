@@ -1,5 +1,6 @@
 {% extends "imagersite/base.html" %}
 {% load static %}
+{% load thumbnail %}
 
 
 {% block nav-bar %}
@@ -16,11 +17,18 @@
 
 
 {% block content %}
-
+{% if album %}
+<h3>{{ album.title }}</h3>
+{% else %}
 <h3>All Publicly Available Photos</h3>
-    <ul>
-      {% for photo in photos %}
-        <li><img src="{{ photo.image.url }}"</li>
-      {% endfor %}
-    </ul>
+{% endif %}
+    {% for photo in photos %}
+      <div class="col-sm-6 col-md-4 col-lg-3">
+        {% thumbnail photo.image "200x200" as image %}
+          <a href="{{ photo.image.url }}" data-fancybox data-caption="{{ photo.title }} - {{ photo.description }}"><img src="{{ image.url }}" rel="gallery" alt=""/></a>
+        {% empty %}
+          <img src="MEDIA/test/testing.png">
+        {% endthumbnail %}
+      </div>
+    {% endfor %}
 {% endblock content %}

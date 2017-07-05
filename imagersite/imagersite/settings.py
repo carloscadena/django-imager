@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'imager_profile',
     'imagersite',
     'bootstrap3',
-    'imager_images'
+    'imager_images',
+    'sorl.thumbnail'
 ]
 
 MIDDLEWARE = [
@@ -135,6 +136,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [

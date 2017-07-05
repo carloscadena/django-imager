@@ -6,8 +6,6 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 def profile_view(request, username=None):
-    # import pdb; pdb.set_trace()
-    # if kwargs['username']is None:
     if not username:
         username = request.user.username
         if not username:
