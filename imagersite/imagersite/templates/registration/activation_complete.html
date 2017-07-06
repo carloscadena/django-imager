@@ -1,4 +1,8 @@
 {% extends 'imagersite/base.html'%}
+{% block nav-bar %}
+  <a href="{% url 'home' %}" class="btn btn-primary btn-lg">Home</a>
+  <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Login</a>
+{% endblock %}
 
 {% block content %}
 <h1> Activated!!</h1>
