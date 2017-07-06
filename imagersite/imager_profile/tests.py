@@ -1,5 +1,4 @@
 """Testing suite for Django-Imager"""
-# from bs4 import BeautifulSoup as soup
 from django.contrib.auth.models import User
 from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse
@@ -79,12 +78,6 @@ class ProfileViewTests(TestCase):
         """Set up for profile view tests."""
         self.client = Client()
         self.req_factory = RequestFactory()
-
-    # # must make link on web page for test to work
-    # def test_link_button_on_home_page_appears(self):
-    #     """."""
-    #     response = self.client(reverse('home'))
-    #     self.assertTrue(b'a href="/"' in response.content)
 
     def test_home_view_responds_200(self):
         """Test that the home view returns a status code of 200."""

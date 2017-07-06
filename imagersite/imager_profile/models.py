@@ -7,11 +7,13 @@ from django.utils.encoding import python_2_unicode_compatible
 
 
 class ImagerActiveProfile(models.Manager):
-    """."""
+    """Profile has been activated"""
 
     def get_queryset(self):
-        """."""
-        return super(ImagerActiveProfile, self).get_queryset().filter(user__is_active=True)
+        """Allow an active user to use site as actived user."""
+        return super(ImagerActiveProfile, self).get_queryset().filter(
+            user__is_active=True
+        )
 
 
 @python_2_unicode_compatible
@@ -47,7 +49,7 @@ class ImagerProfile(models.Model):
 
     @property
     def is_active(self):
-        """."""
+        """True of false if User has been activated."""
         return self.user.is_active
 
     def __str__(self):
@@ -68,5 +70,4 @@ def make_profile_for_new_user(sender, instance, **kwargs):
     """All users get profile added."""
     if kwargs['created']:
         new_profile = ImagerProfile(user=instance)
-        # import pdb; pdb.set_trace()
         new_profile.save()

@@ -1,0 +1,28 @@
+{% extends "imagersite/base.html" %}
+{% load static %}
+
+{% block content %}
+<h2>This is the profile page.</h2>
+<h3>Albums</h3>
+<ul>
+{% for album in albums %}
+    <li>
+    <img src="{{ album.cover_photo.image.url }}" />
+    </li>
+{% endfor %}
+</ul>
+
+<h3>Photos</h3>
+<ul>
+{% for photo in photos %}
+    <li>
+    <img src="{{ photo.image.url }}" />
+    </li>
+{% endfor %}
+</ul>
+{% endblock %}
+
+
+{% block option_js %}
+    <script type="text/javascript" src="{% static 'script.js' %}"></script>
+{% endblock %}
