@@ -23,7 +23,7 @@
 <h3>All Publicly Available Photos</h3>
 {% endif %}
     {% for photo in photos %}
-      <div class="col-sm-6 col-md-4 col-lg-3">
+      <div class="col-sm-6 col-md-4 col-lg-3 photo">
         {% thumbnail photo.image "200x200" as image %}
           <a href="{{ photo.image.url }}" data-fancybox data-caption="{{ photo.title }} - {{ photo.description }}"><img src="{{ image.url }}" rel="gallery" alt=""/></a>
         {% empty %}

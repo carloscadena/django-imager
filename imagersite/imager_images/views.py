@@ -32,13 +32,12 @@ def albums_view(request, album_id=None):
         }
         return render(request, 'imager_images/albums.html', context=context)
     try:
-        the_album = Album.objects.all().filter(id=album_id, published="PU")
-        # import pdb; pdb.set_trace()
+        the_album = Album.objects.get(id=album_id, published="PU")
     except ObjectDoesNotExist:
         return redirect('albums')
-    # photos = Album.photos.all()
+    # import pdb; pdb.set_trace()
     context = {
-        'album': the_album[0],
-        'photos': the_album[0].photos.all()
+        'album': the_album,
+        'photos': the_album.photos.all()
     }
     return render(request, 'imager_images/photos.html', context=context)
