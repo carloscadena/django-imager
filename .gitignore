@@ -102,4 +102,4 @@ ENV/
 
 # ignore Django media files
 imagersite/MEDIA/photos
-# imagersite/MEDIA/cache
+imagersite/MEDIA/cache
