@@ -1,0 +1,32 @@
+{% extends "imagersite/base.html" %}
+{% load static %}
+{% load thumbnail %}
+
+
+{% block nav-bar %}
+<a href="{% url 'home' %}" class="btn btn-primary btn-lg">Home</a>
+<a href="{% url 'photos' %}" class="btn btn-primary btn-lg">Photos</a>
+    {% if user.is_authenticated %}
+        <a href="{% url 'logout' %}" class="btn btn-primary btn-lg">Logout</a>
+        <a href="{% url 'user_profile' %}" class="btn btn-primary btn-lg">{{ user.username }}</a>
+    {% else %}
+        <a href="{% url 'registration_register' %}" class="btn btn-primary btn-lg">Register</a>
+        <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Login</a>
+    {% endif %}
+{% endblock %}
+
+
+{% block content %}
+
+<h3>All Publicly Available Albums</h3>
+    {% for album in albums %}
+      <div class="col-sm-6 col-md-2 col-lg-3 album">
+        <p>{{ album.title }}</p>
+        {% thumbnail album.cover_photo.image "200x200" as cover %}
+          <a href="{% url 'album' album.id %}"><img src="{{ cover.url }}"></a>
+        {% empty %}
+          <img src="MEDIA/test/testing.png">
+        {% endthumbnail %}
+      </div>
+    {% endfor %}
+{% endblock content %}
