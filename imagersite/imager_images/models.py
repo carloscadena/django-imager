@@ -23,7 +23,7 @@ class Photo(models.Model):
     published = models.CharField(
         max_length=2,
         choices=PUB_STATUS,
-        default='PV'
+        default='PU'
     )
 
     def __repr__(self):
