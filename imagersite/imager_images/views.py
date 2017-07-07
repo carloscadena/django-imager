@@ -1,9 +1,8 @@
 """Views for displaying images and albums."""
 from django.shortcuts import render
-from imager_images.models import Photo
 from imager_images.models import Album
-from django.shortcuts import redirect
-from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import get_object_or_404
+from django.views.generic import TemplateView
 
 
 def library_view(request):
@@ -12,32 +11,15 @@ def library_view(request):
     return render(request, 'imager_images/library.html')
 
 
-def photos_view(request):
-    """View for the publicly uploaded photos."""
-    photos = Photo.objects.all().filter(published='PU')
-
-    context = {
-        'photos': photos
-    }
-    return render(request, 'imager_images/photos.html', context=context)
-
-
-def albums_view(request, album_id=None):
+class AlbumsView(TemplateView):
     """View for the publicly uploaded albums."""
-    if not album_id:
-        albums = Album.objects.all().filter(published='PU')
+    template_name = "imager_images/photos.html"
 
+    def get_context_data(self, album_id):
+        """Get album photos."""
+        the_album = get_object_or_404(Album, id=album_id, published="PU")
         context = {
-            'albums': albums,
+            'album': the_album,
+            'photos': the_album.photos.all()
         }
-        return render(request, 'imager_images/albums.html', context=context)
-    try:
-        the_album = Album.objects.get(id=album_id, published="PU")
-    except ObjectDoesNotExist:
-        return redirect('albums')
-    # import pdb; pdb.set_trace()
-    context = {
-        'album': the_album,
-        'photos': the_album.photos.all()
-    }
-    return render(request, 'imager_images/photos.html', context=context)
+        return context
