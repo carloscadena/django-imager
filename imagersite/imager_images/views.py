@@ -9,6 +9,7 @@ from django.views.generic import CreateView
 from django.urls import reverse_lazy
 from imager_profile.models import ImagerProfile
 from django.http import HttpResponseRedirect
+from django import forms
 
 
 def library_view(request):
@@ -28,6 +29,8 @@ class AlbumsView(TemplateView):
             'album': the_album,
             'photos': the_album.photos.all()
         }
+        # import pdb; pdb.set_trace()
+
         return context
 
 
@@ -51,7 +54,7 @@ class PhotoAdd(LoginRequiredMixin, CreateView):
         self.object = form.save(commit=False)
         self.object.profile = ImagerProfile.objects.get(user=self.request.user)
         self.object.save()
-        form.save_m2m()
+        # form.save_m2m()
         return HttpResponseRedirect(self.get_success_url())
 
 
@@ -75,7 +78,10 @@ class AlbumAdd(LoginRequiredMixin, CreateView):
         """Retrieve form and make sure can only see own photos."""
         form = super(AlbumAdd, self).get_form()
         form.fields['cover_photo'].queryset = self.request.user.profile.photos.all()
-        form.fields['photos'].queryset = self.request.user.profile.photos.all()
+        form.fields['photos'] = forms.ModelMultipleChoiceField(
+            queryset=Photo.objects.filter(profile=self.request.user.profile),
+            widget=forms.CheckboxSelectMultiple()
+        )
         return form
 
     def form_valid(self, form):
@@ -83,4 +89,5 @@ class AlbumAdd(LoginRequiredMixin, CreateView):
         self.object = form.save(commit=False)
         self.object.profile = ImagerProfile.objects.get(user=self.request.user)
         self.object.save()
+        form.save_m2m()
         return HttpResponseRedirect(self.get_success_url())
