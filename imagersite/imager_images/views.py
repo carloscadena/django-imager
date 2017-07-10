@@ -1,10 +1,11 @@
 """Views for displaying images and albums."""
-from django.shortcuts import render
 from imager_images.models import Album
 from imager_images.models import Photo
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.views.generic import UpdateView
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
 from imager_profile.models import ImagerProfile
@@ -12,10 +13,18 @@ from django.http import HttpResponseRedirect
 from django import forms
 
 
-def library_view(request):
+class LibraryView(TemplateView):
     """View for library page."""
+    template_name = "imager_images/library.html"
 
-    return render(request, 'imager_images/library.html')
+    def get_context_data(self):
+        """Get albums and photos."""
+        context = {
+            'albums': Album.objects.filter(published="PU"),
+            'photos': Photo.objects.filter(published="PU")
+        }
+
+        return context
 
 
 class AlbumsView(TemplateView):
@@ -29,7 +38,6 @@ class AlbumsView(TemplateView):
             'album': the_album,
             'photos': the_album.photos.all()
         }
-        # import pdb; pdb.set_trace()
 
         return context
 
@@ -54,7 +62,6 @@ class PhotoAdd(LoginRequiredMixin, CreateView):
         self.object = form.save(commit=False)
         self.object.profile = ImagerProfile.objects.get(user=self.request.user)
         self.object.save()
-        # form.save_m2m()
         return HttpResponseRedirect(self.get_success_url())
 
 
@@ -91,3 +98,58 @@ class AlbumAdd(LoginRequiredMixin, CreateView):
         self.object.save()
         form.save_m2m()
         return HttpResponseRedirect(self.get_success_url())
+
+
+class PhotoEdit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    """View for editing a photo."""
+
+    template_name = "imager_images/edit.html"
+    pk_url_kwarg = "photo_id"
+    model = Photo
+    fields = [
+        'title',
+        'description',
+        'published'
+    ]
+    success_url = reverse_lazy("library")
+    login_url = reverse_lazy("login")
+
+    def test_func(self):
+        """Override userpassestest test_func.
+
+        Checks user making post owns Photo.
+        """
+        photo = Photo.objects.get(id=self.kwargs['photo_id'])
+        return photo.profile.user == self.request.user
+
+
+class AlbumEdit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    """View for editing an album."""
+
+    template_name = "imager_images/edit.html"
+    pk_url_kwarg = "album_id"
+    success_url = reverse_lazy("library")
+    model = Album
+    fields = ['photos',
+              'title',
+              'description',
+              'published',
+              'cover_photo']
+
+    def test_func(self):
+        """Override the userpassestest test_func.
+
+        Checks user making post owns Album.
+        """
+        album = Album.objects.get(id=self.kwargs['album_id'])
+        return album.profile.user == self.request.user
+
+    def get_form(self):
+        """Retrieve form and make sure can only see own photos."""
+        form = super(AlbumEdit, self).get_form()
+        form.fields['cover_photo'].queryset = self.request.user.profile.photos.all()
+        form.fields['photos'] = forms.ModelMultipleChoiceField(
+            queryset=Photo.objects.filter(profile=self.request.user.profile),
+            widget=forms.CheckboxSelectMultiple()
+        )
+        return form

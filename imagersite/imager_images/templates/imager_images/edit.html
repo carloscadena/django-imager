@@ -10,10 +10,10 @@
 {% endblock %}
 
 {% block content %}
-  <h1>Add New {{ item }}</h1>
+  <h1>Edit {{ item }}</h1>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="btn btn-primary" value="Save">Save</button>
+    <button type="submit" class="btn btn-primary" value="Save">Update</button>
   </form>
 {% endblock content %}
