@@ -1,14 +1,20 @@
-#!upstart
-description "django-imager"
+server {
+    listen 80;
+    server_name  ec2-34-209-26-144.us-west-2.compute.amazonaws.com;
+    access_log /var/log/nginx/access.log;
 
-start on runlevel [2345]
-stop on runlevel [016]
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
 
+    location /static {
+        root /home/ubuntu/django-imager/imagersite/static/
+    }
 
-respawn
-setuid nobody
-setgid www-data
-
-chdir /home/ubuntu/django-imager/imagersite/imagersite
-
-exec /usr/bin/gunicorn wsgi:application
+    location /MEDIA {
+        root /home/ubuntu/django-imager/imagersite/MEDIA/
+    }
+}
