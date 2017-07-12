@@ -1,0 +1,19 @@
+#!upstart
+description "django-imager"
+
+start on runlevel [2345]
+stop on runlevel [016]
+
+env SECRET_KEY='q0c1+%h#q%v!q#+$8jlz1$lfoe3e@b7fcj4(@@*u0von&!d5q)'
+env DB_HOST='imager-db.csarsmtsgguu.us-west-2.rds.amazonaws.com'
+env DB_NAME='imager_db'
+env DB_USER='imageruser'
+env DB_PASSWORD='cakecakecake'
+
+respawn
+setuid nobody
+setgid www-data
+
+chdir /home/ubuntu/django-imager/imagersite/imagersite
+
+exec /usr/bin/gunicorn wsgi:application

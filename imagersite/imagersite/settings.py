@@ -25,7 +25,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['ec2-34-209-26-144.us-west-2.compute.amazonaws.com', 'localhost']
 
 
 # Application definition
@@ -117,7 +117,15 @@ ACCOUNT_ACTIVATION_DAYS = 7
 LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = '/profile'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'dangoldjangadange'
+EMAIL_HOST_PASSWORD = os.environ.get('GMAIL_PW')
+DEFAULT_FROM_EMAIL = 'dangoldjangadange@gmail.com'
+DEFAULT_TO_EMAIL = 'paysinger@gmail.com'
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
