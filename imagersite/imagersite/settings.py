@@ -117,7 +117,7 @@ ACCOUNT_ACTIVATION_DAYS = 7
 LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = '/profile'
 
-EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
+EMAIL_BACKEND = 'django_smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
