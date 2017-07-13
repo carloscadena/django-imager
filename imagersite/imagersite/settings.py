@@ -147,8 +147,6 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
 if not DEBUG:
     AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
@@ -171,9 +169,6 @@ if not DEBUG:
 
 else:
     STATIC_URL = '/static/'
-    # STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
-    # STATIC_ROOT = os.path.join(BASE_DIR, 'static')
     STATICFILES_DIRS = [
         os.path.join(BASE_DIR, 'static'),
         '/var/www/static/',
