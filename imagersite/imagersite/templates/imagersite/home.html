@@ -1,5 +1,5 @@
 {% extends 'imagersite/base.html' %}
-{% load static %}
+{% load staticfiles %}
 {% block nav-bar %}
   <a href="{% url 'library' %}" class="btn btn-primary btn-lg">Library</a>
     {% if user.is_authenticated %}
