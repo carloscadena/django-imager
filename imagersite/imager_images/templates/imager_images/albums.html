@@ -27,7 +27,7 @@
         {% thumbnail album.cover_photo.image "200x200" as cover %}
           <a href="{% url 'album' album.id %}"><img src="{{ cover.url }}"></a>
         {% empty %}
-          <img src="MEDIA/test/testing.png">
+          <img src='{% static 'imagersite/testing.png' %}'>
         {% endthumbnail %}
       </div>
     {% endfor %}

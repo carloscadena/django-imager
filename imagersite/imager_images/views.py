@@ -20,8 +20,8 @@ class LibraryView(TemplateView):
     def get_context_data(self):
         """Get albums and photos."""
         context = {
-            'albums': Album.objects.filter(published="PU"),
-            'photos': Photo.objects.filter(published="PU")
+            'albums': Album.objects.filter(published="PU").all(),
+            'photos': Photo.objects.filter(published="PU").all()
         }
 
         return context
