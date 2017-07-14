@@ -114,9 +114,8 @@ class PhotoAndAlbumTests(TestCase):
         link = html.findAll("a", {"href": "/images/albums/"})
         self.assertTrue(link)
 
-    def test_album_view_incorrect_id_redirects_to_albums(self):
+    def test_album_view_incorrect_id_404s(self):
         """Test that an incorrect album ID redirects to the albums page."""
         response = self.client.get(
-            reverse('album', kwargs={'album_id': '23'}), follow=True
-        )
-        self.assertTrue(b'All Publicly Available Albums' in response.content)
+            reverse('album', kwargs={'album_id': '23'}))
+        self.assertTrue(response.status_code == 404)

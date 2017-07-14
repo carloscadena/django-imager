@@ -14,10 +14,10 @@
 <h1>hello hello</h1>
 <div>{{ stuff }}</div>
 <div class="col-sm-12 col-md-6 col-md-offset-4 col-lg-4">
-  {% if random_image == None %}
+  {% if not random_image %}
       <img src='{% static 'imagersite/testing.png' %}' alt="supersweethomepageimage" class="img-responsive">
   {% else %}
-    <img src='{% static 'imagersite/testing.png' %}' alt="supersweethomepageimage" class="img-responsive">
+    <img src="{{ random_image.image.url }}" alt="" class="img-responsive">
   {% endif%}
 
 </div>

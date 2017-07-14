@@ -1,4 +1,5 @@
 """Test for registration view."""
+
 from bs4 import BeautifulSoup
 from django.contrib.auth.models import User
 from django.core import mail
@@ -7,6 +8,11 @@ from django.test import RequestFactory
 from django.test import TestCase
 from django.urls import reverse
 from imagersite.views import home_view
+from django.urls import reverse_lazy
+from imager_images.models import Photo
+import factory
+from django.core.files.uploadedfile import SimpleUploadedFile
+import os
 
 
 class ViewTest(TestCase):
@@ -114,3 +120,74 @@ class RegistrationTests(TestCase):
             follow=True
         )
         self.assertIn('Activated!!', response.rendered_content)
+
+
+#  ========================= Tests from class July 13 ========================
+
+
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
+
+class PhotoFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Photo
+
+    title = factory.Sequence(lambda n: "photo{}".format(n))
+    image = SimpleUploadedFile(
+        name='somephoto.jpg',
+        content=open(os.path.join(BASE_DIR, 'MEDIA', 'test', 'testing.png'), 'rb').read(),
+        content_type='image/jpeg'
+    )
+
+
+class HomePageTests(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        self.user = User(username='carl', email='carl@carl.carl')
+        self.user.save()
+
+    def add_photos(self):
+        photos = [PhotoFactory.build() for _ in range(1)]
+        for photo in photos:
+            photo.profile = self.user.profile
+            photo.save()
+
+    def test_when_no_images_placeholder_appears(self):
+        response = self.client.get(reverse_lazy('home'))
+        html = BeautifulSoup(response.content, 'html.parser')
+        self.assertTrue(html.find('img', {'src': '/static/imagersite/testing.png'}))
+
+    def test_when_images_exist_one_of_them_is_on_the_page(self):
+        self.add_photos()
+        response = self.client.get(reverse_lazy('home'))
+        html = BeautifulSoup(response.content, 'html.parser')
+        img_tag = html.find_all('img')
+        self.assertTrue(img_tag[0].attrs['src'] == Photo.objects.first().image.url)
+
+
+class ProfilePageTests(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        self.user = User(username='carl', email='carl@carl.carl')
+        self.user.set_password('bobloblaw')
+        self.user.save()
+
+    def test_user_profile_info_on_profile_page(self):
+        self.client.force_login(self.user)
+        response = self.client.get(reverse_lazy('profile', kwargs={'username': 'carl'}))
+        self.assertTrue(b'<p>Username: carl</p>' in response.content)
+
+    def test_user_profile_page_has_link_to_library_page(self):
+        self.client.force_login(self.user)
+        response = self.client.get(reverse_lazy('profile', kwargs={'username': 'carl'}))
+        html = BeautifulSoup(response.content, 'html.parser')
+        self.assertTrue(html.find('a', {'href': '/images/library/'}))
+
+    def test_when_user_logs_in_redirect_to_profile_page(self):
+        response = self.client.post(reverse_lazy('login'), {
+            'username': self.user.username, 'password': 'bobloblaw'
+        }, follow=True)
+        # import pdb; pdb.set_trace()
+        self.assertTrue(b'<p>Username: carl</p>' in response.content)
