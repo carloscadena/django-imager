@@ -25,7 +25,6 @@ class LibraryView(TemplateView):
             'albums': Album.objects.filter(published="PU").all(),
             'photos': Photo.objects.filter(published="PU").all()
         }
-        import pdb; pdb.set_trace()
         return context
 
 
