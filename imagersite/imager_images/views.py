@@ -25,6 +25,7 @@ class LibraryView(TemplateView):
             'albums': Album.objects.filter(published="PU").all(),
             'photos': Photo.objects.filter(published="PU").all()
         }
+        import pdb; pdb.set_trace()
         return context
 
 
@@ -32,6 +33,7 @@ class AlbumsView(TemplateView):
     """View for the publicly uploaded albums."""
 
     template_name = "imager_images/photos.html"
+    context_object_name = 'photos'
 
     def get_context_data(self, album_id):
         """Get album photos."""

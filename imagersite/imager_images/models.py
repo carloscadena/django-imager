@@ -2,6 +2,7 @@
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from imager_profile.models import ImagerProfile
+from sorl.thumbnail import ImageField
 
 
 PUB_STATUS = (
@@ -20,7 +21,7 @@ class Photo(models.Model):
     profile = models.ForeignKey(ImagerProfile,
                                 on_delete=models.CASCADE,
                                 related_name="photos")
-    image = models.ImageField(upload_to='photos')
+    image = ImageField(upload_to='photos')
     date_uploaded = models.DateField(auto_now_add=True)
     date_modified = models.DateField(auto_now=True)
     date_published = models.DateField(auto_now_add=True)

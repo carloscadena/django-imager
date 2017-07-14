@@ -25,6 +25,6 @@ python-dateutil==2.6.0
 pytz==2017.2
 simplegeneric==0.8.1
 six==1.10.0
-sorl-thumbnail==12.3
+sorl-thumbnail==12.4a1
 traitlets==4.3.2
 wcwidth==0.1.7

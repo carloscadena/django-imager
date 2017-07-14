@@ -31,5 +31,4 @@ def profile_view(request, username=None):
         'album_private': albums.filter(published="PR").count()
     }
     context = {'profile': profile, 'data': data}
-    # import pdb; pdb.set_trace()
     return render(request, 'imager_profile/profile.html', context=context)
