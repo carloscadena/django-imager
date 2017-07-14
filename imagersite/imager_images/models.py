@@ -14,7 +14,9 @@ PUB_STATUS = (
 class Photo(models.Model):
     title = models.CharField(max_length=100, null=True, blank=True)
     description = models.TextField(max_length=256, null=True, blank=True)
-    profile = models.ForeignKey(ImagerProfile, on_delete=models.CASCADE)
+    profile = models.ForeignKey(ImagerProfile,
+                                on_delete=models.CASCADE,
+                                related_name="photos")
     image = models.ImageField(upload_to='photos')
     date_uploaded = models.DateField(auto_now_add=True)
     date_modified = models.DateField(auto_now=True)
@@ -40,7 +42,9 @@ Photo: {}
 class Album(models.Model):
     """Album class"""
 
-    profile = models.ForeignKey(ImagerProfile, on_delete=models.CASCADE)
+    profile = models.ForeignKey(ImagerProfile,
+                                on_delete=models.CASCADE,
+                                related_name="albums")
 
     title = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(max_length=255, blank=True, null=True)

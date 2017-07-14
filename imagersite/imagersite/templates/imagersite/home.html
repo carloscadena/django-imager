@@ -1,14 +1,14 @@
 {% extends 'imagersite/base.html' %}
-{% load static %}
+{% load staticfiles %}
 {% block nav-bar %}
+  <a href="{% url 'library' %}" class="btn btn-primary btn-lg">Library</a>
     {% if user.is_authenticated %}
-        <a href="{% url 'logout' %}" class="btn btn-primary btn-lg">Logout</a>
         <a href="{% url 'user_profile' %}" class="btn btn-primary btn-lg">{{ user.username }}</a>
+        <a href="{% url 'logout' %}" class="btn btn-primary btn-lg">Logout</a>
     {% else %}
         <a href="{% url 'registration_register' %}" class="btn btn-primary btn-lg">Register</a>
         <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Login</a>
     {% endif%}
-    <a href="{% url 'library' %}" class="btn btn-primary btn-lg">Library</a>
 {% endblock %}
 {% block content %}
 <h1>hello hello</h1>

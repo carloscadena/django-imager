@@ -3,8 +3,10 @@ $(document).ready(function() {
 
   $('[data-fancybox]').fancybox({
     helpers : {
-      type: 'inside',
-      position: 'bottom'
+      title: {
+        type: 'inside',
+        position: 'bottom'
+      }
     }
   });
 });

@@ -1,18 +1,20 @@
 {% extends "imagersite/base.html" %}
-{% load static %}
+{% load staticfiles %}
 {% load thumbnail %}
 
 
 {% block nav-bar %}
 <a href="{% url 'home' %}" class="btn btn-primary btn-lg">Home</a>
 <a href="{% url 'photos' %}" class="btn btn-primary btn-lg">Photos</a>
-    {% if user.is_authenticated %}
-        <a href="{% url 'logout' %}" class="btn btn-primary btn-lg">Logout</a>
-        <a href="{% url 'user_profile' %}" class="btn btn-primary btn-lg">{{ user.username }}</a>
-    {% else %}
-        <a href="{% url 'registration_register' %}" class="btn btn-primary btn-lg">Register</a>
-        <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Login</a>
-    {% endif %}
+<a href="{% url 'library' %}" class="btn btn-primary btn-lg">Library</a>
+{% if user.is_authenticated %}
+    <a href="{% url 'logout' %}" class="btn btn-primary btn-lg">Logout</a>
+    <a href="{% url 'user_profile' %}" class="btn btn-primary btn-lg">{{ user.username }}</a>
+{% else %}
+    <a href="{% url 'registration_register' %}" class="btn btn-primary btn-lg">Register</a>
+    <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Login</a>
+{% endif %}
+<a href="{% url 'album_add' %}" class="btn btn-primary btn-lg">Add Album</a>
 {% endblock %}
 
 

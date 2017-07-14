@@ -20,12 +20,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'default')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+TEMPLATE_DEBUG = DEBUG
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'ec2-34-209-185-53.us-west-2.compute.amazonaws.com',
+    'ec2-34-211-255-112.us-west-2.compute.amazonaws.com',
+    'localhost'
+]
 
 
 # Application definition
@@ -41,7 +46,8 @@ INSTALLED_APPS = [
     'imagersite',
     'bootstrap3',
     'imager_images',
-    'sorl.thumbnail'
+    'sorl.thumbnail',
+    'storages'
 ]
 
 MIDDLEWARE = [
@@ -114,9 +120,18 @@ AUTH_PASSWORD_VALIDATORS = [
 
 ACCOUNT_ACTIVATION_DAYS = 7
 
+LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = '/profile'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'dangoldjangadange'
+EMAIL_HOST_PASSWORD = os.environ.get('GMAIL_PW')
+DEFAULT_FROM_EMAIL = 'dangoldjangadange@gmail.com'
+DEFAULT_TO_EMAIL = 'paysinger@gmail.com'
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
@@ -132,17 +147,32 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
+if not DEBUG:
+    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    AWS_S3_CUSTOM_DOMAIN = '{}.s3.amazonaws.com'.format(
+        AWS_STORAGE_BUCKET_NAME
+    )
 
-STATIC_URL = '/static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+    STATICFILES_LOCATION = 'static'
+    STATICFILES_STORAGE = 'imagersite.custom_storages.StaticStorage'
+    STATIC_URL = 'https://{}/{}/'.format(
+        AWS_S3_CUSTOM_DOMAIN, STATICFILES_LOCATION
+    )
 
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-    '/var/www/static/',
-]
+    MEDIAFILES_LOCATION = 'media'
+    DEFAULT_FILE_STORAGE = 'imagersite.custom_storages.MediaStorage'
+    MEDIA_URL = 'htts://{}/{}/'.format(
+        AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION
+    )
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'MEDIA')
+else:
+    STATIC_URL = '/static/'
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, 'static'),
+        '/var/www/static/',
+    ]
+
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'MEDIA')
