@@ -33,7 +33,7 @@
              <img src="{{ image.url }}" rel="gallery" alt=""/>
            </a>
         {% empty %}
-          <img src="MEDIA/test/testing.png">
+          <img src='{% static 'imagersite/testing.png' %}'>
         {% endthumbnail %}
       </div>
     {% endfor %}

@@ -28,7 +28,7 @@
           {% thumbnail album.cover_photo.image "200x200" as cover %}
             <a href="{% url 'album' album.id %}"><img src="{{ cover.url }}"></a>
           {% empty %}
-            <img src="MEDIA/test/testing.png">
+            <img src='{% static 'imagersite/testing.png' %}'>
           {% endthumbnail %}
         </div>
       {% endfor %}
@@ -41,7 +41,7 @@
         {% thumbnail photo.image "200x200" as image %}
           <a href="{{ photo.image.url }}" data-fancybox data-caption="{{ photo.title }} - {{ photo.description }}"><img src="{{ image.url }}" rel="gallery" alt=""/></a>
         {% empty %}
-          <img src="MEDIA/test/testing.png">
+          <img src='{% static 'imagersite/testing.png' %}'>
         {% endthumbnail %}
       </div>
     {% endfor %}
