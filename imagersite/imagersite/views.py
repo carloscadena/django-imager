@@ -6,7 +6,7 @@ import random
 
 def home_view(request):
     """View for home page."""
-    images = Photo.objects.all().filter(published='PU')
+    images = Photo.objects.filter(published='PU')
     if images:
         random_image = random.choice(images)
     else:

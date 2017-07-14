@@ -1,3 +1,4 @@
+"""Image Models."""
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from imager_profile.models import ImagerProfile
@@ -12,6 +13,8 @@ PUB_STATUS = (
 
 @python_2_unicode_compatible
 class Photo(models.Model):
+    """Photo Model."""
+
     title = models.CharField(max_length=100, null=True, blank=True)
     description = models.TextField(max_length=256, null=True, blank=True)
     profile = models.ForeignKey(ImagerProfile,
@@ -29,6 +32,7 @@ class Photo(models.Model):
     )
 
     def __repr__(self):
+        """Show Photo."""
         return "<Photo: {}>".format(self.title)
 
     def __str__(self):
@@ -40,7 +44,7 @@ Photo: {}
 
 @python_2_unicode_compatible
 class Album(models.Model):
-    """Album class"""
+    """Album class."""
 
     profile = models.ForeignKey(ImagerProfile,
                                 on_delete=models.CASCADE,

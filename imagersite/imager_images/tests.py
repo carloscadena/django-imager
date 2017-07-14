@@ -1,20 +1,24 @@
-"""Testing suite for Django-Imager"""
+"""Testing suite for Django-Imager."""
+from bs4 import BeautifulSoup as soup
 from django.contrib.auth.models import User
-from django.test import TestCase, Client
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import Client
+from django.test import TestCase
 from django.urls import reverse
 # from django.urls import reverse_lazy
 import factory
-from imager_images.models import Photo
 from imager_images.models import Album
-from django.core.files.uploadedfile import SimpleUploadedFile
-import os
+from imager_images.models import Photo
 from imagersite.settings import MEDIA_ROOT
-from bs4 import BeautifulSoup as soup
+import os
 
 
 class UserFactory(factory.django.DjangoModelFactory):
     """Setting up users for tests."""
-    class Meta:
+
+    class Meta(object):
+        """Meta."""
+
         model = User
     username = factory.Sequence(lambda n: "user{}".format(n))
     email = factory.Sequence(
@@ -24,7 +28,10 @@ class UserFactory(factory.django.DjangoModelFactory):
 
 class PhotoFactory(factory.django.DjangoModelFactory):
     """Create photos for testing."""
-    class Meta:
+
+    class Meta(object):
+        """Meta."""
+
         model = Photo
     title = factory.Sequence(lambda n: "photo{}".format(n))
     image = SimpleUploadedFile(
@@ -36,7 +43,10 @@ class PhotoFactory(factory.django.DjangoModelFactory):
 
 class AlbumFactory(factory.django.DjangoModelFactory):
     """Create albums for testing."""
-    class Meta:
+
+    class Meta(object):
+        """Meta."""
+
         model = Album
     title = factory.Sequence(lambda n: "album{}".format(n))
 

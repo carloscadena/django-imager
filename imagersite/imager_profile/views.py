@@ -25,11 +25,11 @@ def profile_view(request, username=None):
     albums = Album.objects.filter(profile=user.profile)
 
     data = {
-        'photo_published': photos.filter(published="PUBLIC").count(),
-        'photo_private': photos.filter(published="PRIVATE").count(),
-        'album_published': albums.filter(published="PUBLIC").count(),
-        'album_private': albums.filter(published="PRIVATE").count()
+        'photo_published': photos.filter(published="PU").count(),
+        'photo_private': photos.filter(published="PR").count(),
+        'album_published': albums.filter(published="PU").count(),
+        'album_private': albums.filter(published="PR").count()
     }
     context = {'profile': profile, 'data': data}
-
+    # import pdb; pdb.set_trace()
     return render(request, 'imager_profile/profile.html', context=context)

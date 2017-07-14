@@ -20,11 +20,12 @@ class LibraryView(TemplateView):
 
     def get_context_data(self):
         """Get albums and photos."""
+        # context = super(LibraryView, self).get_context_data()
         context = {
             'albums': Album.objects.filter(published="PU").all(),
             'photos': Photo.objects.filter(published="PU").all()
         }
-
+        import pdb; pdb.set_trace()
         return context
 
 
@@ -35,12 +36,11 @@ class AlbumsView(TemplateView):
 
     def get_context_data(self, album_id):
         """Get album photos."""
-        the_album = get_object_or_404(Album, id=album_id, published="PU")
+        album = get_object_or_404(Album, id=album_id, published="PU")
         context = {
-            'album': the_album,
-            'photos': the_album.photos.all()
+            'album': album,
+            'photos': album.photos.all()
         }
-
         return context
 
 
