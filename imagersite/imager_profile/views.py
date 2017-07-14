@@ -1,8 +1,10 @@
-from django.shortcuts import render
-from imager_images.models import Album, Photo
+"""Profile views."""
 from django.contrib.auth.models import User
-from django.shortcuts import redirect
 from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import redirect
+from django.shortcuts import render
+from imager_images.models import Album
+from imager_images.models import Photo
 
 
 def profile_view(request, username=None):
