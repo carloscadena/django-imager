@@ -135,7 +135,7 @@ class PhotoFactory(factory.django.DjangoModelFactory):
     title = factory.Sequence(lambda n: "photo{}".format(n))
     image = SimpleUploadedFile(
         name='somephoto.jpg',
-        content=open(os.path.join(BASE_DIR, 'MEDIA', 'test', 'testing.png'), 'rb').read(),
+        content=open(os.path.join(BASE_DIR, 'imagersite/static/imagersite/testing.png'), 'rb').read(),
         content_type='image/jpeg'
     )
 
@@ -156,6 +156,7 @@ class HomePageTests(TestCase):
     def test_when_no_images_placeholder_appears(self):
         response = self.client.get(reverse_lazy('home'))
         html = BeautifulSoup(response.content, 'html.parser')
+        # import pdb; pdb.set_trace()
         self.assertTrue(html.find('img', {'src': '/static/imagersite/testing.png'}))
 
     def test_when_images_exist_one_of_them_is_on_the_page(self):
