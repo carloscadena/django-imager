@@ -132,14 +132,18 @@ ACCOUNT_ACTIVATION_DAYS = 7
 LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = '/profile'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# ========= Email ========= #
+if not DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'dangoldjangadange'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
-DEFAULT_FROM_EMAIL = 'dangoldjangadange@gmail.com'
-DEFAULT_TO_EMAIL = 'paysinger@gmail.com'
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', ''),
+DEFAULT_TO_EMAIL = os.environ.get('DEFAULT_TO_EMAIL', ''),
 
 
 LANGUAGE_CODE = 'en-us'
@@ -152,6 +156,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+# =========== S3 ============== #
 if not DEBUG:
     AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
