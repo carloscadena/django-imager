@@ -81,10 +81,17 @@ Run the server in order to server the app on localhost
 - cover_photo
 - photos
 
-# Ansible
+# Ansible [repo](https://github.com/W-Ely/ansible)
 
 ## Requirements
-- EC2, RDS, and S3 setup.
+- EC2, RDS, and S3 setup.  <--- more complicated than I can layout here
+- EC2, RDS resource
+-- [Irreverently Me - From 0 to 60 with Django on AWS](https://irreverently.me/2015/07/05/from-0-to-60-with-django-on-aws/)
+- S3 resources
+-- [Dan Poirier - Using Amazon S3 to Store your Django Site's Static and Media Files](https://www.caktusgroup.com/blog/2014/11/10/Using-Amazon-S3-to-store-your-Django-sites-static-and-media-files/)
+-- [Jorge Chang - HOWTO: Deploy a fault tolerant Django app on AWS – Part 2: Moving static and media files to S3](http://www.jorgechang.com/blog/howto-deploy-a-fault-tolerant-django-app-on-aws-part-2-moving-static-media-files-to-s3/)
+
+
 ## Usage
 - clone ansible repo: ```git clone https://github.com/W-Ely/ansible.git```
 - cd into dir: ```cd ansible```
