@@ -132,6 +132,7 @@ ACCOUNT_ACTIVATION_DAYS = 7
 LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = '/profile'
 
+# ========= Email ========= #
 if not DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 else:
@@ -155,6 +156,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+# =========== S3 ============== #
 if not DEBUG:
     AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
