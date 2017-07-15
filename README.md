@@ -39,7 +39,14 @@ Run the server in order to server the app on localhost
 - /logout
 - /account/register
 - /profile
+- /profile/<user>
 - /admin
+- /images/albums
+- /images/albums/<id>
+- /images/albums/add
+- /images/photos/
+- /images/photos/add
+- /library
 
 ## Models
 ### User
@@ -73,3 +80,13 @@ Run the server in order to server the app on localhost
 - published
 - cover_photo
 - photos
+
+# Ansible
+
+## Requirements
+- EC2, RDS, and S3 setup.
+## Usage
+- clone ansible repo: ```git clone https://github.com/W-Ely/ansible.git```
+- cd into dir: ```cd ansible```
+- create a "hosts" file with your variables inside following the format in hosts_template
+- run ansible playbook to deploy: ```ansible-playbook -i hosts playbooks/django-project.yml```
