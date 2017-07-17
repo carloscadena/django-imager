@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY', 'secret')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', True)
+DEBUG = os.environ.get('DEBUG', False)
 
 # sorl thumb related
 TEMPLATE_DEBUG = DEBUG
@@ -125,10 +125,10 @@ LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = '/profile'
 
 # ========= Email ========= #
-# if not DEBUG:
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# else:
-#     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+if not DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -149,28 +149,28 @@ USE_L10N = True
 USE_TZ = True
 
 # =========== S3 ============== #
-# if not DEBUG:
-AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-AWS_S3_CUSTOM_DOMAIN = '{}.s3.amazonaws.com'.format(
-    AWS_STORAGE_BUCKET_NAME
-)
-STATICFILES_LOCATION = 'static'
-STATICFILES_STORAGE = 'imagersite.custom_storages.StaticStorage'
-STATIC_URL = 'https://{}/{}/'.format(
-    AWS_S3_CUSTOM_DOMAIN, STATICFILES_LOCATION
-)
-MEDIAFILES_LOCATION = 'media'
-DEFAULT_FILE_STORAGE = 'imagersite.custom_storages.MediaStorage'
-MEDIA_URL = 'htts://{}/{}/'.format(
-    AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION
-)
-# else:
-#     STATIC_URL = '/static/'
-#     STATICFILES_DIRS = [
-#         os.path.join(BASE_DIR, 'imagersite/static'),
-#         '/var/www/static/',
-#     ]
-#     MEDIA_URL = '/media/'
-#     MEDIA_ROOT = os.path.join(BASE_DIR, 'imagersite/media')
+if not DEBUG:
+    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    AWS_S3_CUSTOM_DOMAIN = '{}.s3.amazonaws.com'.format(
+        AWS_STORAGE_BUCKET_NAME
+    )
+    STATICFILES_LOCATION = 'static'
+    STATICFILES_STORAGE = 'imagersite.custom_storages.StaticStorage'
+    STATIC_URL = 'https://{}/{}/'.format(
+        AWS_S3_CUSTOM_DOMAIN, STATICFILES_LOCATION
+    )
+    MEDIAFILES_LOCATION = 'media'
+    DEFAULT_FILE_STORAGE = 'imagersite.custom_storages.MediaStorage'
+    MEDIA_URL = 'htts://{}/{}/'.format(
+        AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION
+    )
+else:
+    STATIC_URL = '/static/'
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, 'imagersite/static'),
+        '/var/www/static/',
+    ]
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'imagersite/media')
