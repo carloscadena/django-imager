@@ -9,14 +9,15 @@
 
 
 {% block content %}
+
 {% if user == profile.user %}
-<p>Username: {{ profile.user.username }}</p>
-<p>Camera: {{ profile.camera }}</p>
-<p>Photography Level: {{ profile.photog_level }}</p>
-<h2>Personal information</h2>
-<ul>
-  <li>Location: {{ profile.location }}</li>
-</ul>
+    <p>Username: {{ profile.user.username }}</p>
+    <p>Camera: {{ profile.camera }}</p>
+    <p>Photography Level: {{ profile.photog_level }}</p>
+    <h2>Personal information</h2>
+    <ul>
+      <li>Location: {{ profile.location }}</li>
+    </ul>
 {% endif %}
 
 <div class="">
@@ -35,6 +36,4 @@
     <p>Public: {{ data.album_published }}<p>
 </div>
 
-
-
-{% endblock content %}
+{% endblock %}

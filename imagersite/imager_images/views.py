@@ -1,44 +1,46 @@
 """Views for displaying images and albums."""
-from imager_images.models import Album
-from imager_images.models import Photo
-from django.shortcuts import get_object_or_404
-from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.views.generic import UpdateView
-from django.views.generic import CreateView
-from django.urls import reverse_lazy
-from imager_profile.models import ImagerProfile
-from django.http import HttpResponseRedirect
 from django import forms
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
+from django.views.generic import TemplateView
+from django.views.generic import UpdateView
+from imager_images.models import Album
+from imager_images.models import Photo
+from imager_profile.models import ImagerProfile
 
 
 class LibraryView(TemplateView):
     """View for library page."""
+
     template_name = "imager_images/library.html"
 
     def get_context_data(self):
         """Get albums and photos."""
+        # context = super(LibraryView, self).get_context_data()
         context = {
-            'albums': Album.objects.filter(published="PU"),
-            'photos': Photo.objects.filter(published="PU")
+            'albums': Album.objects.filter(published="PU").all(),
+            'photos': Photo.objects.filter(published="PU").all()
         }
-
         return context
 
 
 class AlbumsView(TemplateView):
     """View for the publicly uploaded albums."""
+
     template_name = "imager_images/photos.html"
+    context_object_name = 'photos'
 
     def get_context_data(self, album_id):
         """Get album photos."""
-        the_album = get_object_or_404(Album, id=album_id, published="PU")
+        album = get_object_or_404(Album, id=album_id, published="PU")
         context = {
-            'album': the_album,
-            'photos': the_album.photos.all()
+            'album': album,
+            'photos': album.photos.all()
         }
-
         return context
 
 

@@ -20,20 +20,21 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'default')
+
+SECRET_KEY = os.environ.get('SECRET_KEY', 'secret')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get('DEBUG', False)
+
+# sorl thumb related
 TEMPLATE_DEBUG = DEBUG
+THUMBNAIL_FORCE_OVERWRITE = True
 
 ALLOWED_HOSTS = [
     'ec2-34-209-185-53.us-west-2.compute.amazonaws.com',
     'ec2-34-211-255-112.us-west-2.compute.amazonaws.com',
     'localhost'
 ]
-
-
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -82,9 +83,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'imagersite.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -99,9 +97,12 @@ DATABASES = {
     }
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'imager_cache'
+    }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -123,18 +124,19 @@ ACCOUNT_ACTIVATION_DAYS = 7
 LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = '/profile'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# ========= Email ========= #
+if not DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'dangoldjangadange'
-EMAIL_HOST_PASSWORD = os.environ.get('GMAIL_PW')
-DEFAULT_FROM_EMAIL = 'dangoldjangadange@gmail.com'
-DEFAULT_TO_EMAIL = 'paysinger@gmail.com'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', '')
+DEFAULT_TO_EMAIL = os.environ.get('DEFAULT_TO_EMAIL', '')
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/1.11/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
@@ -146,7 +148,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+# =========== S3 ============== #
 if not DEBUG:
     AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
@@ -154,25 +156,21 @@ if not DEBUG:
     AWS_S3_CUSTOM_DOMAIN = '{}.s3.amazonaws.com'.format(
         AWS_STORAGE_BUCKET_NAME
     )
-
     STATICFILES_LOCATION = 'static'
     STATICFILES_STORAGE = 'imagersite.custom_storages.StaticStorage'
     STATIC_URL = 'https://{}/{}/'.format(
         AWS_S3_CUSTOM_DOMAIN, STATICFILES_LOCATION
     )
-
     MEDIAFILES_LOCATION = 'media'
     DEFAULT_FILE_STORAGE = 'imagersite.custom_storages.MediaStorage'
     MEDIA_URL = 'htts://{}/{}/'.format(
         AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION
     )
-
 else:
     STATIC_URL = '/static/'
     STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, 'static'),
+        os.path.join(BASE_DIR, 'imagersite/static'),
         '/var/www/static/',
     ]
-
     MEDIA_URL = '/media/'
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'MEDIA')
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'imagersite/media')
