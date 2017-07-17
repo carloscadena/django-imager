@@ -26,14 +26,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'secret')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', False)
 
-TEMPLATE_DEBUG = DEBUG
-
-ALLOWED_HOSTS = [
-    'ec2-34-209-185-53.us-west-2.compute.amazonaws.com',
-    'ec2-34-211-255-112.us-west-2.compute.amazonaws.com',
-    'localhost'
-]
-
 # sorl thumb related
 TEMPLATE_DEBUG = DEBUG
 THUMBNAIL_FORCE_OVERWRITE = True
