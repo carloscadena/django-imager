@@ -47,7 +47,9 @@ INSTALLED_APPS = [
     'bootstrap3',
     'imager_images',
     'sorl.thumbnail',
-    'storages'
+    'storages',
+    'rest_framework',
+    'imager_api.apps.ImagerApiConfig'
 ]
 
 MIDDLEWARE = [
@@ -62,6 +64,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'imagersite.urls'
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
 
 TEMPLATES = [
     {

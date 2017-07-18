@@ -29,8 +29,9 @@ urlpatterns = [
     url(r'^logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
     url(r'^accounts/', include('registration.backends.hmac.urls')),
     url(r'^profile/', include("imager_profile.urls")),
-    url(r'^images/', include("imager_images.urls"))
-
+    url(r'^images/', include("imager_images.urls")),
+    # url(r'^api/v1/', include('rest_framework.urls')),
+    url(r'^api/v1/', include('imager_api.urls')),
 ]
 
 
