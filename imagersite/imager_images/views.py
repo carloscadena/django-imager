@@ -134,7 +134,8 @@ class PhotoEdit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     fields = [
         'title',
         'description',
-        'published'
+        'published',
+        'tags'
     ]
     success_url = reverse_lazy("library")
     login_url = reverse_lazy("login")
