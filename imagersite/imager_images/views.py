@@ -15,6 +15,25 @@ from django.views.generic import ListView
 from taggit.models import Tag
 
 
+class PhotosView(TemplateView):
+    """View for the publicly uploaded albums."""
+
+    template_name = "imager_images/photos.html"
+    context_object_name = 'photos'
+
+    def get_context_data(self, slug=None):
+        """Get photos."""
+        if not slug:
+            photos = Photo.objects.filter(published="PU").all()
+        else:
+            photos = Photo.objects.filter(published="PU", tags__slug=slug).all()
+        context = {
+            'photos': photos,
+            'tags': Tag.objects.all()
+        }
+        return context
+
+
 class LibraryView(TemplateView):
     """View for library page."""
 
@@ -34,7 +53,7 @@ class AlbumsView(TemplateView):
 
     template_name = "imager_images/photos.html"
     context_object_name = 'photos'
-    
+
     def get_context_data(self, album_id):
         """Get album photos."""
         album = get_object_or_404(Album, id=album_id, published="PU")
@@ -160,20 +179,3 @@ class AlbumEdit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             widget=forms.CheckboxSelectMultiple()
         )
         return form
-
-
-class ListTaggedPhotos(ListView):
-    """List the photos with a specific tag."""
-    template_name = "imager_images/photos.html"
-    model = Photo
-    context_object_name = "photos"
-
-    def get_queryset(self):
-        """Get query set."""
-        return Photo.objects.filter(tags__slug=self.kwargs.get('slug')).all()
-
-    def get_context_data(self, kwargs):
-        """Get the context data."""
-        context = super(ListTaggedPhotos, self).get_context_data(kwargs)
-        context['tags'] = Tag.objects.all()
-        return context

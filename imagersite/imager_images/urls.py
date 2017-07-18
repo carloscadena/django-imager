@@ -8,18 +8,12 @@ from imager_images.views import AlbumsView
 from imager_images.views import AlbumAdd
 from imager_images.views import PhotoAdd
 from imager_images.views import PhotoEdit
-from imager_images.views import AlbumEdit
-from imager_images.views import ListTaggedPhotos
+from imager_images.views import AlbumEdit, PhotosView
+# from imager_images.views import ListTaggedPhotos
 
 urlpatterns = [
     url(r'^library/$', LibraryView.as_view(), name='library'),
-    url(r'^photos/$', ListView.as_view(
-        template_name="imager_images/photos.html",
-        model=Photo,
-        context_object_name="photos",
-        queryset=Photo.objects.filter(published="PU")
-
-    ), name='photos'),
+    url(r'^photos/$', PhotosView.as_view(), name='photos'),
     url(r'^albums/$', ListView.as_view(
         template_name="imager_images/albums.html",
         model=Album,
@@ -39,5 +33,5 @@ urlpatterns = [
         AlbumEdit.as_view(),
         name='album_edit'
     ),
-    url(r'^tagged/(?P<slug>\w+)$', ListTaggedPhotos.as_view(), name='tagged_photos')
+    url(r'^tagged/(?P<slug>\w+)$', PhotosView.as_view(), name='tagged_photos')
 ]
