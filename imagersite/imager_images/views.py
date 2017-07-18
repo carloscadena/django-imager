@@ -11,7 +11,6 @@ from django.views.generic import UpdateView
 from imager_images.models import Album
 from imager_images.models import Photo
 from imager_profile.models import ImagerProfile
-from django.views.generic import ListView
 from taggit.models import Tag
 
 

@@ -2,14 +2,12 @@
 from django.conf.urls import url
 from imager_images.views import LibraryView
 from django.views.generic import ListView
-from imager_images.models import Photo
 from imager_images.models import Album
 from imager_images.views import AlbumsView
 from imager_images.views import AlbumAdd
 from imager_images.views import PhotoAdd
 from imager_images.views import PhotoEdit
 from imager_images.views import AlbumEdit, PhotosView
-# from imager_images.views import ListTaggedPhotos
 
 urlpatterns = [
     url(r'^library/$', LibraryView.as_view(), name='library'),
