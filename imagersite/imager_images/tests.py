@@ -1,20 +1,24 @@
-"""Testing suite for Django-Imager"""
+"""Testing suite for Django-Imager."""
+from bs4 import BeautifulSoup as soup
 from django.contrib.auth.models import User
-from django.test import TestCase, Client
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import Client
+from django.test import TestCase
 from django.urls import reverse
 # from django.urls import reverse_lazy
 import factory
-from imager_images.models import Photo
 from imager_images.models import Album
-from django.core.files.uploadedfile import SimpleUploadedFile
-import os
+from imager_images.models import Photo
 from imagersite.settings import MEDIA_ROOT
-from bs4 import BeautifulSoup as soup
+import os
 
 
 class UserFactory(factory.django.DjangoModelFactory):
     """Setting up users for tests."""
-    class Meta:
+
+    class Meta(object):
+        """Meta."""
+
         model = User
     username = factory.Sequence(lambda n: "user{}".format(n))
     email = factory.Sequence(
@@ -24,7 +28,10 @@ class UserFactory(factory.django.DjangoModelFactory):
 
 class PhotoFactory(factory.django.DjangoModelFactory):
     """Create photos for testing."""
-    class Meta:
+
+    class Meta(object):
+        """Meta."""
+
         model = Photo
     title = factory.Sequence(lambda n: "photo{}".format(n))
     image = SimpleUploadedFile(
@@ -36,7 +43,10 @@ class PhotoFactory(factory.django.DjangoModelFactory):
 
 class AlbumFactory(factory.django.DjangoModelFactory):
     """Create albums for testing."""
-    class Meta:
+
+    class Meta(object):
+        """Meta."""
+
         model = Album
     title = factory.Sequence(lambda n: "album{}".format(n))
 
@@ -114,9 +124,8 @@ class PhotoAndAlbumTests(TestCase):
         link = html.findAll("a", {"href": "/images/albums/"})
         self.assertTrue(link)
 
-    def test_album_view_incorrect_id_redirects_to_albums(self):
+    def test_album_view_incorrect_id_404s(self):
         """Test that an incorrect album ID redirects to the albums page."""
         response = self.client.get(
-            reverse('album', kwargs={'album_id': '23'}), follow=True
-        )
-        self.assertTrue(b'All Publicly Available Albums' in response.content)
+            reverse('album', kwargs={'album_id': '23'}))
+        self.assertTrue(response.status_code == 404)
