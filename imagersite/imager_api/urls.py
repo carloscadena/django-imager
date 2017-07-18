@@ -1,8 +1,7 @@
 """Urls for API."""
 from django.conf.urls import url
-from imager_api.views import profile_list
+from imager_api.views import photo_list
 
 urlpatterns = [
-    url(r'^profiles/$', profile_list, name='api'),
-    # url(r'^snippets/(?P<pk>[0-9]+)/$', views.snippet_detail),
+    url(r'^photos/$', photo_list, name='api')
 ]

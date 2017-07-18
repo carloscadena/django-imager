@@ -33,7 +33,8 @@ THUMBNAIL_FORCE_OVERWRITE = True
 ALLOWED_HOSTS = [
     'ec2-34-209-185-53.us-west-2.compute.amazonaws.com',
     'ec2-34-211-255-112.us-west-2.compute.amazonaws.com',
-    'localhost'
+    'localhost',
+    '127.0.0.1'
 ]
 
 INSTALLED_APPS = [
