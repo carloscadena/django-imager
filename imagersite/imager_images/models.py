@@ -32,7 +32,7 @@ class Photo(models.Model):
         choices=PUB_STATUS,
         default='PU'
     )
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
 
     def __repr__(self):
         """Show Photo."""
@@ -73,7 +73,6 @@ class Album(models.Model):
         related_name='in_album',
         blank=True
     )
-    tags = TaggableManager()
 
     def __str__(self):
         """Show string."""

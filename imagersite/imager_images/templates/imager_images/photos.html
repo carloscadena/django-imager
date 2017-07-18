@@ -22,7 +22,7 @@
     <div class="tag-list">
        <ul>
          {% for tag in tags %}
-           <li><a href="{% url 'tagged' tag.slug %}"></a></li>
+           <li><a href="{% url 'tagged_photos' tag.slug %}">{{ tag }}</a></li>
          {% empty %}
            <li>No Tags</li>
          {% endfor %}
