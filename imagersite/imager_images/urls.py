@@ -9,6 +9,7 @@ from imager_images.views import AlbumAdd
 from imager_images.views import PhotoAdd
 from imager_images.views import PhotoEdit
 from imager_images.views import AlbumEdit
+from imager_images.views import ListTaggedPhotos
 
 urlpatterns = [
     url(r'^library/$', LibraryView.as_view(), name='library'),
@@ -37,5 +38,6 @@ urlpatterns = [
         r'^albums/(?P<album_id>\d+)/edit/$',
         AlbumEdit.as_view(),
         name='album_edit'
-    )
+    ),
+    url(r'^tagged/(?P<slug>\w+)$', ListTaggedPhotos.as_view(), name='tagged_photos')
 ]

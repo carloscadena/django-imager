@@ -19,6 +19,15 @@
 
 
 {% block content %}
+    <div class="tag-list">
+       <ul>
+         {% for tag in tags %}
+           <li><a href="{% url 'tagged' tag.slug %}"></a></li>
+         {% empty %}
+           <li>No Tags</li>
+         {% endfor %}
+       </ul>
+    </div>
     {% if album %}
     <h3>{{ album.title }} <a class="btn btn-primary-btn-sm" href="{% url 'album_edit' album.id%}">Edit this album</a></h3>
     {% else %}

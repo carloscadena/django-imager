@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'bootstrap3',
     'imager_images',
     'sorl.thumbnail',
-    'storages'
+    'storages',
+    'taggit'
 ]
 
 MIDDLEWARE = [

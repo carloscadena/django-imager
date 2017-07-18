@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from imager_profile.models import ImagerProfile
 from sorl.thumbnail import ImageField
+from taggit.managers import TaggableManager
 
 
 PUB_STATUS = (
@@ -31,6 +32,7 @@ class Photo(models.Model):
         choices=PUB_STATUS,
         default='PU'
     )
+    tags = TaggableManager()
 
     def __repr__(self):
         """Show Photo."""
@@ -71,6 +73,7 @@ class Album(models.Model):
         related_name='in_album',
         blank=True
     )
+    tags = TaggableManager()
 
     def __str__(self):
         """Show string."""

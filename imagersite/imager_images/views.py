@@ -11,6 +11,8 @@ from django.views.generic import UpdateView
 from imager_images.models import Album
 from imager_images.models import Photo
 from imager_profile.models import ImagerProfile
+from django.views.generic import ListView
+from taggit.models import Tag
 
 
 class LibraryView(TemplateView):
@@ -20,7 +22,6 @@ class LibraryView(TemplateView):
 
     def get_context_data(self):
         """Get albums and photos."""
-        # context = super(LibraryView, self).get_context_data()
         context = {
             'albums': Album.objects.filter(published="PU").all(),
             'photos': Photo.objects.filter(published="PU").all()
@@ -53,7 +54,8 @@ class PhotoAdd(LoginRequiredMixin, CreateView):
         'image',
         'title',
         'description',
-        'published'
+        'published',
+        'tags'
     ]
 
     success_url = reverse_lazy("library")
@@ -77,7 +79,8 @@ class AlbumAdd(LoginRequiredMixin, CreateView):
         'title',
         'description',
         'published',
-        'cover_photo'
+        'cover_photo',
+        'tags'
     ]
 
     success_url = reverse_lazy("library")
@@ -155,3 +158,17 @@ class AlbumEdit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             widget=forms.CheckboxSelectMultiple()
         )
         return form
+
+
+class ListTaggedPhotos(ListView):
+    template_name = "imager_images/photos.html"
+
+    def get_queryset(self):
+        return Photo.objects.filter(tags__slug=self.kwargs.get('slug')).all()
+
+
+class TagMixin(object):
+    def get_context_data(self, kwargs):
+        context = super(TagMixin, self).get_context_data(kwargs)
+        context['tags'] = Tag.objects.all()
+        return context
