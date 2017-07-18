@@ -60,7 +60,6 @@ class AlbumsView(TemplateView):
             'album': album,
             'photos': album.photos.all()
         }
-        import pdb; pdb.set_trace()
         return context
 
 
@@ -99,8 +98,7 @@ class AlbumAdd(LoginRequiredMixin, CreateView):
         'title',
         'description',
         'published',
-        'cover_photo',
-        'tags'
+        'cover_photo'
     ]
 
     success_url = reverse_lazy("library")
