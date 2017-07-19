@@ -12,6 +12,7 @@ from imager_images.models import Album
 from imager_images.models import Photo
 from imager_profile.models import ImagerProfile
 from taggit.models import Tag
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 class PhotosView(TemplateView):
@@ -20,16 +21,29 @@ class PhotosView(TemplateView):
     template_name = "imager_images/photos.html"
     context_object_name = 'photos'
 
-    def get_context_data(self, slug=None):
+    def get_context_data(self, slug=None, page_num=1):
         """Get photos."""
         if not slug:
             photos = Photo.objects.filter(published="PU").all()
         else:
-            photos = Photo.objects.filter(published="PU", tags__slug=slug).all()
+            photos = Photo.objects.filter(
+                published="PU",
+                tags__slug=slug
+            ).all()
+        photo_pages = Paginator(photos, 3)
+
+        try:
+            photo_page = photo_pages.page(page_num)
+        except PageNotAnInteger:
+            photo_page = photo_pages.page(1)
+        except EmptyPage:
+            photo_page = photo_pages.page(1)
+
         context = {
-            'photos': photos,
+            'photos': photo_page,
             'tags': Tag.objects.all()
         }
+        # import pdb; pdb.set_trace()
         return context
 
 
@@ -38,11 +52,28 @@ class LibraryView(TemplateView):
 
     template_name = "imager_images/library.html"
 
-    def get_context_data(self):
+    def get_context_data(self, album_page_num=1, photo_page_num=1):
         """Get albums and photos."""
+        album_pages = Paginator(Album.objects.filter(published="PU").all(), 3)
+        photo_pages = Paginator(Photo.objects.filter(published="PU").all(), 3)
+
+        try:
+            photo_page = photo_pages.page(photo_page_num)
+        except PageNotAnInteger:
+            photo_page = photo_pages.page(1)
+        except EmptyPage:
+            photo_page = photo_pages.page(1)
+
+        try:
+            album_page = album_pages.page(album_page_num)
+        except PageNotAnInteger:
+            album_page = album_pages.page(1)
+        except EmptyPage:
+            album_page = album_pages.page(1)
+
         context = {
-            'albums': Album.objects.filter(published="PU").all(),
-            'photos': Photo.objects.filter(published="PU").all()
+            'albums': album_page,
+            'photos': photo_page
         }
         return context
 
@@ -76,7 +107,10 @@ class PhotoAdd(LoginRequiredMixin, CreateView):
         'tags'
     ]
 
-    success_url = reverse_lazy("library")
+    success_url = reverse_lazy(
+        "library",
+        kwargs={'album_page_num': 1, 'photo_page_num': 1}
+    )
     login_url = reverse_lazy("login")
 
     def form_valid(self, form):
@@ -101,7 +135,10 @@ class AlbumAdd(LoginRequiredMixin, CreateView):
         'cover_photo'
     ]
 
-    success_url = reverse_lazy("library")
+    success_url = reverse_lazy(
+        "library",
+        kwargs={'album_page_num': 1, 'photo_page_num': 1}
+    )
     login_url = reverse_lazy("login")
 
     def get_form(self):
@@ -135,7 +172,10 @@ class PhotoEdit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         'published',
         'tags'
     ]
-    success_url = reverse_lazy("library")
+    success_url = reverse_lazy(
+        "library",
+        kwargs={'album_page_num': 1, 'photo_page_num': 1}
+    )
     login_url = reverse_lazy("login")
 
     def test_func(self):
@@ -152,7 +192,10 @@ class AlbumEdit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     template_name = "imager_images/edit.html"
     pk_url_kwarg = "album_id"
-    success_url = reverse_lazy("library")
+    success_url = reverse_lazy(
+        "library",
+        kwargs={'album_page_num': 1, 'photo_page_num': 1}
+    )
     model = Album
     fields = ['photos',
               'title',
