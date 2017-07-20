@@ -78,27 +78,27 @@ class PhotoAndAlbumTests(TestCase):
 
     def test_album_view_status_200(self):
         """Test that the album view returns a status code of 200."""
-        response = self.client.get(reverse('albums'))
+        response = self.client.get(reverse('albums', kwargs={'page_num': 1}))
         self.assertEqual(response.status_code, 200)
 
     def test_album_view_shows_one_album(self):
         """Test that the Album view shows the one album that was created."""
-        response = self.client.get(reverse('albums'))
+        response = self.client.get(reverse('albums', kwargs={'page_num': 1}))
         html = soup(response.content, "html.parser")
         albums = html.findAll("div", {"class": "album"})
         self.assertTrue(len(albums) == 1)
 
     def test_photo_view_returns_status_200(self):
         """Test that the photo view returns a status code of 200."""
-        response = self.client.get(reverse('photos'))
+        response = self.client.get(reverse('photos', kwargs={'page_num': 1}))
         self.assertEqual(response.status_code, 200)
 
     def test_photo_view_has_20_images(self):
         """Test that the photo view shows the 20 images created."""
-        response = self.client.get(reverse('photos'))
+        response = self.client.get(reverse('photos', kwargs={'page_num': 1}))
         html = soup(response.content, "html.parser")
         photos = html.findAll("div", {"class": "photo"})
-        self.assertTrue(len(photos) == 20)
+        self.assertTrue(len(photos) == 3)
 
     # def test_album_view_with_album_id_returns_status_code_200(self):
     #     """Test that a specific album view returns a status code of 200."""
@@ -113,15 +113,20 @@ class PhotoAndAlbumTests(TestCase):
 
     def test_library_view_returns_status_200(self):
         """Test that the library view returns a status code of 200."""
-        response = self.client.get(reverse('library'))
+        response = self.client.get(reverse(
+            'library',
+            kwargs={'album_page_num': 1, 'photo_page_num': 1}
+        ))
         self.assertEqual(response.status_code, 200)
 
     def test_library_view_has_link_to_albums(self):
         """Test that link to the albums is available on the library view."""
-        response = self.client.get(reverse('library'))
+        response = self.client.get(reverse(
+            'library',
+            kwargs={'album_page_num': 1, 'photo_page_num': 1})
+        )
         html = soup(response.content, "html.parser")
-        # import pdb; pdb.set_trace()
-        link = html.findAll("a", {"href": "/images/albums/"})
+        link = html.findAll("a", {"href": "/images/albums/1"})
         self.assertTrue(link)
 
     def test_album_view_incorrect_id_404s(self):
