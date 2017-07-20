@@ -2,9 +2,9 @@
 
 {% block nav-bar %}
 <a href="{% url 'home' %}" class="btn btn-primary btn-lg">Home</a>
-<a href="{% url 'photos' %}" class="btn btn-primary btn-lg">Photos</a>
-<a href="{% url 'albums' %}" class="btn btn-primary btn-lg">Albums</a>
-<a href="{% url 'library' %}" class="btn btn-primary btn-lg">Library</a>
+<a href="{% url 'photos' 1 %}" class="btn btn-primary btn-lg">Photos</a>
+<a href="{% url 'albums' 1 %}" class="btn btn-primary btn-lg">Albums</a>
+<a href="{% url 'library' 1 1 %}" class="btn btn-primary btn-lg">Library</a>
 <a href="{% url 'user_profile' %}" class="btn btn-primary btn-lg">{{ user.username }}</a>
 <a href="{% url 'logout' %}" class="btn btn-primary btn-lg">Logout</a>
 {% endblock %}

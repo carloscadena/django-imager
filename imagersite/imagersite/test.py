@@ -184,7 +184,7 @@ class ProfilePageTests(TestCase):
         self.client.force_login(self.user)
         response = self.client.get(reverse_lazy('profile', kwargs={'username': 'carl'}))
         html = BeautifulSoup(response.content, 'html.parser')
-        self.assertTrue(html.find('a', {'href': '/images/library/'}))
+        self.assertTrue(html.find('a', {'href': '/images/library/1/1'}))
 
     def test_when_user_logs_in_redirect_to_profile_page(self):
         response = self.client.post(reverse_lazy('login'), {

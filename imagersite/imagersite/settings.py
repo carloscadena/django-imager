@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'imager_images',
     'sorl.thumbnail',
     'storages',
-    'taggit'
+    'taggit',
+    'social_django'
 ]
 
 MIDDLEWARE = [
@@ -60,7 +61,21 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.github.GithubOAuth2',
+    'social_core.backends.twitter.TwitterOAuth',
+    'social_core.backends.facebook.FacebookOAuth2',
+
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+SOCIAL_AUTH_GITHUB_KEY = '6383aa5f644035333f40'
+SOCIAL_AUTH_GITHUB_SECRET = '93758cf7a601a93f5a6eefb0a81de9eab113d7ed'
+SOCIAL_AUTH_TWITTER_KEY = 'owQTZrb4hy1lepOeSplaMZUmu'
+SOCIAL_AUTH_TWITTER_SECRET = '0xWiQaqownQq7b9UMiLHLDRB9P7AOWv3nFVaCDkJHJlLqIfsY6'
 
 ROOT_URLCONF = 'imagersite.urls'
 
@@ -76,6 +91,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },

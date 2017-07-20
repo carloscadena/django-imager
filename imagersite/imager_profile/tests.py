@@ -177,7 +177,7 @@ class ProfileTests(TestCase):
     def test_profile_route_not_logged_in_redirects_home(self):
         """Test that the profile route directs home when not logged in."""
         response = self.client.get(reverse('user_profile'), follow=True)
-        self.assertTrue(b'hello' in response.content)
+        self.assertTrue(b'Django Imager' in response.content)
 
     def test_upload_image_add_new_photo_instance(self):
         """Test uploading images adds new photo instance."""
