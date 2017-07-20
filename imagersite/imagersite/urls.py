@@ -29,7 +29,8 @@ urlpatterns = [
     url(r'^logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
     url(r'^accounts/', include('registration.backends.hmac.urls')),
     url(r'^profile/', include("imager_profile.urls")),
-    url(r'^images/', include("imager_images.urls"))
+    url(r'^images/', include("imager_images.urls")),
+    url(r'^oauth/', include('social_django.urls', namespace='social')),
 
 ]
 
