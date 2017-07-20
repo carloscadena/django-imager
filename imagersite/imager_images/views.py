@@ -11,6 +11,26 @@ from django.views.generic import UpdateView
 from imager_images.models import Album
 from imager_images.models import Photo
 from imager_profile.models import ImagerProfile
+from taggit.models import Tag
+
+
+class PhotosView(TemplateView):
+    """View for the publicly uploaded albums."""
+
+    template_name = "imager_images/photos.html"
+    context_object_name = 'photos'
+
+    def get_context_data(self, slug=None):
+        """Get photos."""
+        if not slug:
+            photos = Photo.objects.filter(published="PU").all()
+        else:
+            photos = Photo.objects.filter(published="PU", tags__slug=slug).all()
+        context = {
+            'photos': photos,
+            'tags': Tag.objects.all()
+        }
+        return context
 
 
 class LibraryView(TemplateView):
@@ -20,7 +40,6 @@ class LibraryView(TemplateView):
 
     def get_context_data(self):
         """Get albums and photos."""
-        # context = super(LibraryView, self).get_context_data()
         context = {
             'albums': Album.objects.filter(published="PU").all(),
             'photos': Photo.objects.filter(published="PU").all()
@@ -53,7 +72,8 @@ class PhotoAdd(LoginRequiredMixin, CreateView):
         'image',
         'title',
         'description',
-        'published'
+        'published',
+        'tags'
     ]
 
     success_url = reverse_lazy("library")
@@ -64,6 +84,7 @@ class PhotoAdd(LoginRequiredMixin, CreateView):
         self.object = form.save(commit=False)
         self.object.profile = ImagerProfile.objects.get(user=self.request.user)
         self.object.save()
+        form.save_m2m()
         return HttpResponseRedirect(self.get_success_url())
 
 
@@ -111,7 +132,8 @@ class PhotoEdit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     fields = [
         'title',
         'description',
-        'published'
+        'published',
+        'tags'
     ]
     success_url = reverse_lazy("library")
     login_url = reverse_lazy("login")
