@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'storages',
     'taggit',
-    'social_django'
+    'social_django',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [
