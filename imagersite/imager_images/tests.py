@@ -126,7 +126,7 @@ class PhotoAndAlbumTests(TestCase):
             kwargs={'album_page_num': 1, 'photo_page_num': 1})
         )
         html = soup(response.content, "html.parser")
-        link = html.findAll("a", {"href": "/images/albums/1"})
+        link = html.findAll("a", {"href": "/images/albums/page/1"})
         self.assertTrue(link)
 
     def test_album_view_incorrect_id_404s(self):
