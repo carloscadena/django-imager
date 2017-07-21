@@ -15,8 +15,8 @@ urlpatterns = [
         LibraryView.as_view(),
         name='library'
     ),
-    url(r'^photos/(?P<page_num>\d*)$', PhotosView.as_view(), name='photos'),
-    url(r'^albums/(?P<page_num>\d*)$', ListView.as_view(
+    url(r'^photos/page/(?P<page_num>\d*)$', PhotosView.as_view(), name='photos'),
+    url(r'^albums/page/(?P<page_num>\d*)$', ListView.as_view(
         template_name="imager_images/albums.html",
         model=Album,
         context_object_name="albums",
