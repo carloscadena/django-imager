@@ -27,7 +27,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'secret')
 DEBUG = os.environ.get('DEBUG', False)
 
 # sorl thumb related
-TEMPLATE_DEBUG = DEBUG
 THUMBNAIL_FORCE_OVERWRITE = True
 
 ALLOWED_HOSTS = [
@@ -96,6 +95,7 @@ TEMPLATES = [
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
             ],
+            'debug': DEBUG
         },
     },
 ]
