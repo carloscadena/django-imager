@@ -5,12 +5,13 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client
 from django.test import TestCase
 from django.urls import reverse
-# from django.urls import reverse_lazy
+from django.urls import reverse_lazy
 import factory
 from imager_images.models import Album
 from imager_images.models import Photo
 from imagersite.settings import MEDIA_ROOT
 import os
+from bs4 import BeautifulSoup as soup
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -93,23 +94,30 @@ class PhotoAndAlbumTests(TestCase):
         response = self.client.get(reverse('photos', kwargs={'page_num': 1}))
         self.assertEqual(response.status_code, 200)
 
-    def test_photo_view_has_20_images(self):
+    def test_photo_view_has_3_images(self):
         """Test that the photo view shows the 20 images created."""
         response = self.client.get(reverse('photos', kwargs={'page_num': 1}))
         html = soup(response.content, "html.parser")
         photos = html.findAll("div", {"class": "photo"})
         self.assertTrue(len(photos) == 3)
 
-    # def test_album_view_with_album_id_returns_status_code_200(self):
-    #     """Test that a specific album view returns a status code of 200."""
-    #     response = self.client.get(
-    #         reverse_lazy('album', kwargs={'album_id': '1'})
-    #     )
-    #     self.assertEqual(response.status_code, 200)
+    def test_album_view_with_album_id_returns_status_code_200(self):
+        """Test that a specific album view returns a status code of 200."""
+        album_id = Album.objects.all()[0].id
+        response = self.client.get(
+            reverse_lazy('album', kwargs={'album_id': album_id})
+        )
+        self.assertEqual(response.status_code, 200)
 
-    # def test_album_view_with_ID_has_20_images(self):
-    #     """Test that an album has 20 images in it."""
-    #     pass
+    def test_album_with_ID_has_20_images_in_it(self):
+        """Test that an album has 20 images in it."""
+        album_id = Album.objects.all()[0].id
+        response = self.client.get(
+            reverse_lazy('album', kwargs={'album_id': album_id})
+        )
+        html = soup(response.content, "html.parser")
+        photos = html.findAll("div", {"class": "photo"})
+        self.assertEqual(len(photos), 20)
 
     def test_library_view_returns_status_200(self):
         """Test that the library view returns a status code of 200."""
@@ -129,8 +137,36 @@ class PhotoAndAlbumTests(TestCase):
         link = html.findAll("a", {"href": "/images/albums/1"})
         self.assertTrue(link)
 
+    def test_library_view_displays_public_albums(self):
+        """Test that the library view shows all public albums"""
+        response = self.client.get(reverse(
+            'library',
+            kwargs={'album_page_num': 1, 'photo_page_num': 1})
+        )
+        html = soup(response.rendered_content, "html.parser")
+        albums = html.findAll('div', {'class': 'album'})
+        self.assertTrue(len(albums) == 1)
+
+    def test_library_view_displays_public_photos(self):
+        """Test that the library view shows all public photos"""
+        response = self.client.get(reverse(
+            'library',
+            kwargs={'album_page_num': 1, 'photo_page_num': 1})
+        )
+        html = soup(response.rendered_content, "html.parser")
+        photos = html.findAll('div', {'class': 'photo'})
+        self.assertTrue(len(photos) == 3)
+
     def test_album_view_incorrect_id_404s(self):
         """Test that an incorrect album ID redirects to the albums page."""
         response = self.client.get(
             reverse('album', kwargs={'album_id': '23'}))
         self.assertTrue(response.status_code == 404)
+
+    def test_album_names_display_on_library_page(self):
+        """Test that the album name displays with albums on library page."""
+        response = self.client.get(reverse(
+            'library',
+            kwargs={'album_page_num': 1, 'photo_page_num': 1})
+        )
+        self.assertTrue(b'<p>album0</p>' in response.content)
