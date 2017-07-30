@@ -1,7 +1,7 @@
 """Testing suite for Django-Imager"""
 from django.contrib.auth.models import User
 from django.test import TestCase, Client, RequestFactory
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 import factory
 from imager_profile.models import ImagerProfile
 from imagersite.views import home_view
@@ -209,3 +209,96 @@ class ProfileTests(TestCase):
         """Test that deletion of user also deletes that user's profile."""
         self.user.delete()
         self.assertTrue(ImagerProfile.objects.count() == 0)
+
+    def test_profile_view_photo_count(self):
+        """Test that the profile view lists correct number of photos."""
+        test_bob = User(username='bob')
+        test_bob.set_password('bobberton')
+        test_bob.save()
+        self.client.post(
+            reverse('login'),
+            {'username': 'bob', 'password': 'bobberton'}
+        )
+        response = self.client.get(
+            reverse_lazy('user_profile')
+        )
+        self.assertTrue(b'<p>Public: 0<p>' in response.content)
+
+    def test_profile_view_has_link_to_library(self):
+        """Test that the link to the library is in the photo view."""
+        test_bob = User(username='bob')
+        test_bob.set_password('bobberton')
+        test_bob.save()
+        self.client.post(
+            reverse('login'),
+            {'username': 'bob', 'password': 'bobberton'}
+        )
+        response = self.client.get(
+            reverse_lazy('user_profile')
+        )
+        self.assertTrue(b'href="/images/library/1/1"' in response.content)
+
+    def test_profile_link_to_library_directs_to_library_view(self):
+        """Test profile page library links redirects to library."""
+        response = self.client.get(
+            reverse_lazy(
+                'library',
+                kwargs={'album_page_num': 1, 'photo_page_num': 1}
+            )
+        )
+        self.assertTrue(
+            b'All Publicly Available Albums' in response.content
+            and b'All Publicly Available Photos' in response.content
+        )
+
+    def test_logged_in_user_redirects_to_profile(self):
+        """Test when user logs in is directed to profile."""
+        test_bob = User(username='bob')
+        test_bob.set_password('bobberton')
+        test_bob.save()
+        response = self.client.post(
+            reverse('login'),
+            {'username': 'bob', 'password': 'bobberton'}
+        )
+        self.assertTrue(response.status_code == 302)
+
+    def test_logged_in_profile_url_is_correct(self):
+        """Test logged in user profile url is /profile/."""
+        test_bob = User(username='bob')
+        test_bob.set_password('bobberton')
+        test_bob.save()
+        response = self.client.post(
+            reverse('login'),
+            {'username': 'bob', 'password': 'bobberton'}
+        )
+        self.assertTrue(response.url == '/profile')
+
+    def test_other_user_profile_url_is_correct(self):
+        """Test other profile url is correct."""
+        test_bob = User(username='bob')
+        test_bob.set_password('bobberton')
+        test_bob.save()
+        response = self.client.get(
+            reverse_lazy('profile', kwargs={'username': 'bob'})
+        )
+        self.assertTrue(response.request['PATH_INFO'] == '/profile/bob/')
+
+    def test_private_info_not_shown_in_profile(self):
+        """Test private info is not shown in profile."""
+        test_bob = User(username='bob')
+        test_bob.set_password('bobberton')
+        test_bob.save()
+        response = self.client.get(
+            reverse_lazy('profile', kwargs={'username': 'bob'})
+        )
+        self.assertTrue(b'Private:' not in response.content)
+
+    def test_public_info_is_displayed(self):
+        """Test public info is displayed."""
+        test_bob = User(username='bob')
+        test_bob.set_password('bobberton')
+        test_bob.save()
+        response = self.client.get(
+            reverse_lazy('profile', kwargs={'username': 'bob'})
+        )
+        self.assertTrue(b'Public:' in response.content)
