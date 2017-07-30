@@ -97,7 +97,7 @@ class ProfileTestCase(TestCase):
 
     def test_profiles_equals_users(self):
         """Every created user has a profile."""
-        self.assertTrue(ImagerProfile.objects.count() == 20)
+        self.assertTrue(ImagerProfile.objects.count() == User.objects.count())
 
     def test_is_active_method(self):
         """Test newly created users are active."""
@@ -204,3 +204,8 @@ class ProfileTests(TestCase):
         self.assertTrue(Album.objects.count() == 1)
         self.user.delete()
         self.assertTrue(Album.objects.count() == 0)
+
+    def test_delete_user_also_deletes_profile(self):
+        """Test that deletion of user also deletes that user's profile."""
+        self.user.delete()
+        self.assertTrue(ImagerProfile.objects.count() == 0)
