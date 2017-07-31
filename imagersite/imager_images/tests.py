@@ -11,7 +11,6 @@ from imager_images.models import Album
 from imager_images.models import Photo
 from imagersite.settings import MEDIA_ROOT
 import os
-from bs4 import BeautifulSoup as soup
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -64,10 +63,13 @@ class PhotoAndAlbumTests(TestCase):
         photos = [PhotoFactory.create(profile=user.profile) for i in range(20)]
         album = AlbumFactory.build()
         album.profile = user.profile
+        photos[0].tags.add('testtag')
+        photos[0].save()
         album.save()
         for photo in photos:
             album.photos.add(photo)
         album.cover_photo = photos[0]
+
         self.photos = photos
         self.album = album
         self.client = Client()
@@ -170,3 +172,105 @@ class PhotoAndAlbumTests(TestCase):
             kwargs={'album_page_num': 1, 'photo_page_num': 1})
         )
         self.assertTrue(b'<p>album0</p>' in response.content)
+
+# Taggit Tests ============================================
+
+    def test_tags_show_on_photos_view(self):
+        """Test tags show on photos view."""
+        response = self.client.get(
+            reverse('photos', kwargs={'page_num': 1})
+        )
+        self.assertTrue(b'testtag' in response.content)
+
+    def test_tags_show_on_library_view(self):
+        """Test Tags show on library view."""
+        response = self.client.get(
+            reverse(
+                'library',
+                kwargs={'album_page_num': 1, 'photo_page_num': 1}
+            )
+        )
+        self.assertTrue(b'testtag' in response.content)
+
+    def test_tags_show_on_individual_album_page(self):
+        """Test tags show on individual album page."""
+        album_id = Album.objects.all()[0].id
+        response = self.client.get(
+            reverse(
+                'album',
+                kwargs={'album_id': album_id}
+            )
+        )
+        self.assertTrue(b'testtag' in response.content)
+
+    def test_tags_link_to_more_photos_with_same_tag(self):
+        """Test tags link to more photos with the same tag."""
+        album_id = Album.objects.all()[0].id
+        response = self.client.get(
+            reverse(
+                'album',
+                kwargs={'album_id': album_id}
+            )
+        )
+        html = soup(response.rendered_content, "html.parser")
+        link = html.findAll('a', {'href': '/images/tagged/testtag'})
+        self.assertTrue(link)
+        response = self.client.get(reverse(
+            'tagged_photos',
+            kwargs={'slug': 'testtag'})
+        )
+        html = soup(response.rendered_content, "html.parser")
+        link = html.findAll('div', {'class': 'photo'})
+        self.assertTrue(len(link) == 1)
+
+    def test_tags_can_be_added_to_photos(self):
+        """Test tags can be added to photos."""
+        user = User.objects.all()[0]
+        self.client.force_login(user)
+        photo_id = Photo.objects.all()[0].id
+        response = self.client.get(reverse(
+            'photo_edit',
+            kwargs={'photo_id': photo_id})
+        )
+        html = soup(response.rendered_content, "html.parser")
+        token = html.findAll('input', {'name': "csrfmiddlewaretoken"})
+        info = {
+            'title': 'photo name',
+            'description': 'a description',
+            'tags': 'basketball',
+            'published': 'PU',
+            'csrfmiddlewaretoken': token[0]['value']
+        }
+        response = self.client.post(
+            reverse('photo_edit', kwargs={'photo_id': photo_id}),
+            info,
+            follow=True
+        )
+        html = soup(response.content, "html.parser")
+        self.assertTrue(b'basketball' in response.content)
+
+    def test_tags_can_be_edited_on_photos(self):
+        """Test tags can be edited on photos."""
+        user = User.objects.all()[0]
+        self.client.force_login(user)
+        photo_id = Photo.objects.all()[0].id
+        response = self.client.get(reverse(
+            'photo_edit',
+            kwargs={'photo_id': photo_id})
+        )
+        html = soup(response.rendered_content, "html.parser")
+        token = html.findAll('input', {'name': "csrfmiddlewaretoken"})
+        info = {
+            'title': 'photo name',
+            'description': 'a description',
+            'tags': 'seals',
+            'published': 'PU',
+            'csrfmiddlewaretoken': token[0]['value']
+        }
+        response = self.client.post(
+            reverse('photo_edit', kwargs={'photo_id': photo_id}),
+            info,
+            follow=True
+        )
+        html = soup(response.content, "html.parser")
+        self.assertTrue(b'seals' in response.content)

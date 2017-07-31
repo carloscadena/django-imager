@@ -73,7 +73,8 @@ class LibraryView(TemplateView):
 
         context = {
             'albums': album_page,
-            'photos': photo_page
+            'photos': photo_page,
+            'tags': Tag.objects.all()
         }
         return context
 
@@ -89,7 +90,8 @@ class AlbumsView(TemplateView):
         album = get_object_or_404(Album, id=album_id, published="PU")
         context = {
             'album': album,
-            'photos': album.photos.all()
+            'photos': album.photos.all(),
+            'tags': Tag.objects.all()
         }
         return context
 
