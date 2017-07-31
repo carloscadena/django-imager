@@ -47,6 +47,31 @@ class PhotosView(TemplateView):
         return context
 
 
+class AlbumsView(TemplateView):
+    """View for the publicly uploaded albums."""
+
+    template_name = "imager_images/albums.html"
+    context_object_name = 'albums'
+
+    def get_context_data(self, page_num=1):
+        """Get albums."""
+
+        albums = Album.objects.filter(published="PU").all()
+        album_pages = Paginator(albums, 3)
+
+        try:
+            album_page = album_pages.page(page_num)
+        except PageNotAnInteger:
+            album_page = album_pages.page(1)
+        except EmptyPage:
+            album_page = album_pages.page(1)
+
+        context = {
+            'albums': album_page,
+        }
+        return context
+
+
 class LibraryView(TemplateView):
     """View for library page."""
 
@@ -79,20 +104,30 @@ class LibraryView(TemplateView):
         return context
 
 
-class AlbumsView(TemplateView):
+class AlbumView(TemplateView):
     """View for the publicly uploaded albums."""
 
     template_name = "imager_images/photos.html"
     context_object_name = 'photos'
 
-    def get_context_data(self, album_id):
+    def get_context_data(self, album_id, page_num=1):
         """Get album photos."""
         album = get_object_or_404(Album, id=album_id, published="PU")
+        photo_pages = Paginator(album.photos.all(), 3)
+
+        try:
+            photo_page = photo_pages.page(page_num)
+        except PageNotAnInteger:
+            photo_page = photo_pages.page(1)
+        except EmptyPage:
+            photo_page = photo_pages.page(1)
+
         context = {
+            'photos': photo_page,
             'album': album,
-            'photos': album.photos.all(),
             'tags': Tag.objects.all()
         }
+        # import pdb; pdb.set_trace()
         return context
 
 

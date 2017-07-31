@@ -1,9 +1,8 @@
 """Routes for user public images."""
 from django.conf.urls import url
 from imager_images.views import LibraryView
-from django.views.generic import ListView
-from imager_images.models import Album
 from imager_images.views import AlbumsView
+from imager_images.views import AlbumView
 from imager_images.views import AlbumAdd
 from imager_images.views import PhotoAdd
 from imager_images.views import PhotoEdit
@@ -16,14 +15,12 @@ urlpatterns = [
         name='library'
     ),
     url(r'^photos/page/(?P<page_num>\d*)$', PhotosView.as_view(), name='photos'),
-    url(r'^albums/page/(?P<page_num>\d*)$', ListView.as_view(
-        template_name="imager_images/albums.html",
-        model=Album,
-        context_object_name="albums",
-        queryset=Album.objects.filter(published="PU"),
-        paginate_by=3
-    ), name='albums'),
-    url(r'^album/(?P<album_id>\d+)$', AlbumsView.as_view(), name='album'),
+    url(r'^albums/page/(?P<page_num>\d*)$', AlbumsView.as_view(), name='albums'),
+    url(
+        r'^album/(?P<album_id>\d+)/(?P<page_num>\d*)$',
+        AlbumView.as_view(),
+        name='album'
+    ),
     url(r'^photos/add/$', PhotoAdd.as_view(), name='photo_add'),
     url(r'^albums/add/$', AlbumAdd.as_view(), name='album_add'),
     url(

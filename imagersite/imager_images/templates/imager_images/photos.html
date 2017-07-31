@@ -30,33 +30,57 @@
     </div>
     {% if album %}
     <h3>{{ album.title }} <a class="btn btn-primary-btn-sm" href="{% url 'album_edit' album.id%}">Edit this album</a></h3>
+    <div class="col-sm-12">
+        {% if photos.has_other_pages %}
+          <ul class="pagination">
+            {% if photos.has_previous %}
+              <li><a href="{% url 'album' album.id photos.previous_page_number %}">&laquo;</a></li>
+            {% else %}
+              <li class="disabled"><span>&laquo;</span></li>
+            {% endif %}
+            {% for i in photos.paginator.page_range %}
+              {% if photos.number == i %}
+                <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+              {% else %}
+                <li><a href="{% url 'album' album.id i %}">{{ i }}</a></li>
+              {% endif %}
+            {% endfor %}
+            {% if photos.has_next %}
+              <li><a href="{% url 'album' album.id photos.next_page_number %}">&raquo;</a></li>
+            {% else %}
+              <li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+          </ul>
+        {% endif %}
+    </div>
     {% else %}
     <h3>All Publicly Available Photos</h3>
+    <div class="col-sm-12">
+        {% if photos.has_other_pages %}
+          <ul class="pagination">
+            {% if photos.has_previous %}
+              <li><a href="{% url 'photos' photos.previous_page_number %}">&laquo;</a></li>
+            {% else %}
+              <li class="disabled"><span>&laquo;</span></li>
+            {% endif %}
+            {% for i in photos.paginator.page_range %}
+              {% if photos.number == i %}
+                <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+              {% else %}
+                <li><a href="{% url 'photos' i %}">{{ i }}</a></li>
+              {% endif %}
+            {% endfor %}
+            {% if photos.has_next %}
+              <li><a href="{% url 'photos' photos.next_page_number %}">&raquo;</a></li>
+            {% else %}
+              <li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+          </ul>
+        {% endif %}
+    </div>
     {% endif %}
 
-<div class="col-sm-12">
-    {% if photos.has_other_pages %}
-      <ul class="pagination">
-        {% if photos.has_previous %}
-          <li><a href="{% url 'photos' photos.previous_page_number %}">&laquo;</a></li>
-        {% else %}
-          <li class="disabled"><span>&laquo;</span></li>
-        {% endif %}
-        {% for i in photos.paginator.page_range %}
-          {% if photos.number == i %}
-            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-          {% else %}
-            <li><a href="{% url 'photos' i %}">{{ i }}</a></li>
-          {% endif %}
-        {% endfor %}
-        {% if photos.has_next %}
-          <li><a href="{% url 'photos' photos.next_page_number %}">&raquo;</a></li>
-        {% else %}
-          <li class="disabled"><span>&raquo;</span></li>
-        {% endif %}
-      </ul>
-    {% endif %}
-</div>
+
 
     {% for photo in photos %}
       <div class="col-sm-6 col-md-4 col-lg-3 photo">
