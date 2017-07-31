@@ -83,7 +83,6 @@
     {% endif %}
 </div>
 
-
 <div class="col-sm-12">
 <h3>All Publicly Available Photos</h3>
     {% for photo in photos %}
@@ -95,5 +94,15 @@
         {% endthumbnail %}
       </div>
     {% endfor %}
+</div>
+
+<div class="tag-list">
+   <ul>
+     {% for tag in tags %}
+       <li><a href="{% url 'tagged_photos' tag.slug %}">{{ tag }}</a></li>
+     {% empty %}
+       <li>No Tags</li>
+     {% endfor %}
+   </ul>
 </div>
 {% endblock %}
