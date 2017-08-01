@@ -32,7 +32,8 @@ THUMBNAIL_FORCE_OVERWRITE = True
 ALLOWED_HOSTS = [
     'ec2-34-209-185-53.us-west-2.compute.amazonaws.com',
     'ec2-34-211-255-112.us-west-2.compute.amazonaws.com',
-    'localhost'
+    'localhost',
+    '127.0.0.1'
 ]
 
 INSTALLED_APPS = [
@@ -48,6 +49,8 @@ INSTALLED_APPS = [
     'imager_images',
     'sorl.thumbnail',
     'storages',
+    'rest_framework',
+    'imager_api.apps.ImagerApiConfig',
     'taggit',
     'social_django',
     'django_extensions'
@@ -75,11 +78,19 @@ AUTHENTICATION_BACKENDS = (
 SOCIAL_AUTH_GITHUB_KEY = os.environ.get('SOCIAL_AUTH_GITHUB_KEY')
 SOCIAL_AUTH_GITHUB_SECRET = os.environ.get('SOCIAL_AUTH_GITHUB_SECRET')
 
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
+
 SOCIAL_AUTH_TWITTER_KEY = os.environ.get('SOCIAL_AUTH_TWITTER_KEY')
 SOCIAL_AUTH_TWITTER_SECRET = os.environ.get('SOCIAL_AUTH_TWITTER_SECRET')
 
 ROOT_URLCONF = 'imagersite.urls'
 TEMPLATE_DEBUG = DEBUG
+
 
 TEMPLATES = [
     {
