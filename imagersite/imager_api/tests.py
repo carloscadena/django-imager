@@ -6,6 +6,7 @@ import factory
 from imager_images.models import Album
 from imager_images.models import Photo
 from imagersite.settings import MEDIA_ROOT
+import os
 from rest_framework.test import APITestCase
 
 
@@ -64,6 +65,11 @@ class ApiTests(APITestCase):
             album.photos.add(photo)
         album.cover_photo = photos[0]
         album.save()
+
+    def tearDown(self):
+        """Teardown when tests complete."""
+        to_delete = os.path.join(MEDIA_ROOT, 'photos', 'testing*.png')
+        os.system('rm -rf ' + to_delete)
 
     def test_get_route_status_200(self):
         """Status 200."""
