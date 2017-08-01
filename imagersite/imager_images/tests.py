@@ -169,7 +169,7 @@ class PhotoAndAlbumTests(TestCase):
             'library',
             kwargs={'album_page_num': 1, 'photo_page_num': 1})
         )
-        self.assertTrue(b'<p>album0</p>' in response.content)
+        self.assertTrue(b'<p>album' in response.content)
 
 # Taggit Tests ============================================
 
@@ -273,7 +273,7 @@ class PhotoAndAlbumTests(TestCase):
         html = soup(response.content, "html.parser")
         self.assertTrue(b'seals' in response.content)
 
-    # Pagination tests ==================================
+# Pagination tests ==================================
 
     def test_library_page_has_only_3_photos(self):
         """Test that the library page does not show more than 3 photos."""
@@ -447,3 +447,181 @@ class PhotoAndAlbumTests(TestCase):
                 kwargs={'album_id': album_id, 'page_num': 2}),
         )
         self.assertTrue(b'album/' + str(album_id).encode(encoding='UTF-8') + b'/1' in response.content)
+
+# Test Photo and Album creation functionality
+
+    def test_album_create_view_status_code_200(self):
+        """Test the album create view returns status code 200."""
+        user = User.objects.all()[0]
+        self.client.force_login(user)
+        response = self.client.get(reverse('album_add'))
+        self.assertTrue(response.status_code == 200)
+
+    def test_album_create_view_not_logged_in_status_code_302(self):
+        """Test the album create view returns status code 302."""
+        response = self.client.get(reverse('album_add'))
+        self.assertTrue(response.status_code == 302)
+
+    def test_photo_create_view_returns_status_code_200(self):
+        """Test that the photo create view returns status code 200.."""
+        user = User.objects.all()[0]
+        self.client.force_login(user)
+        response = self.client.get(reverse('photo_add'))
+        self.assertTrue(response.status_code == 200)
+
+    def test_photo_create_view_not_logged_inreturns_status_code_302(self):
+        """Test that the photo create view returns status code 302."""
+        response = self.client.get(reverse('photo_add'))
+        self.assertTrue(response.status_code == 302)
+
+    def test_library_view_has_buttons_to_photo_create(self):
+        """Test library view has buttons to add photo."""
+        user = User.objects.all()[0]
+        self.client.force_login(user)
+        response = self.client.get(
+            reverse(
+                'library',
+                kwargs={'album_page_num': 1, 'photo_page_num': 1}
+            )
+        )
+        self.assertTrue(
+            reverse('photo_add').encode('utf-8') in response.content
+        )
+
+    def test_library_view_has_button_to_album_create(self):
+        """Test library view has buttons to add album."""
+        user = User.objects.all()[0]
+        self.client.force_login(user)
+        response = self.client.get(
+            reverse(
+                'library',
+                kwargs={'album_page_num': 1, 'photo_page_num': 1}
+            )
+        )
+        self.assertTrue(
+            reverse('album_add').encode('utf-8') in response.content
+        )
+
+    def test_create_album_view_has_correct_fields(self):
+        """Test create album view has correct fields for adding new."""
+        user = User.objects.all()[0]
+        self.client.force_login(user)
+        response = self.client.get(reverse('album_add'))
+        html = soup(response.content, "html.parser")
+        field = html.findAll('input', {'name': 'title'})
+        self.assertTrue(field)
+
+    def test_create_photo_view_has_correct_fields(self):
+        """Test create photo view has correct fields for adding new."""
+        user = User.objects.all()[0]
+        self.client.force_login(user)
+        response = self.client.get(reverse('photo_add'))
+        html = soup(response.content, "html.parser")
+        field = html.findAll('input', {'name': 'title'})
+        self.assertTrue(field)
+
+    def test_ability_to_assign_photos_in_album_create_view(self):
+        """Test that album create view has ability to assign photos."""
+        user = User.objects.all()[0]
+        self.client.force_login(user)
+        response = self.client.get(reverse('album_add'))
+        html = soup(response.rendered_content, "html.parser")
+        token = html.findAll('input', {'name': "csrfmiddlewaretoken"})
+        info = {
+            'title': 'album name',
+            'description': 'a description',
+            'published': 'PU',
+            'photos': [1, 2, 3],
+            'cover_photo': 1,
+            'csrfmiddlewaretoken': token[0]['value']
+        }
+        response = self.client.post(
+            reverse('album_add'),
+            info,
+            follow=True
+        )
+        self.assertTrue(user.profile.albums.count() == 2)
+
+    def test_after_create_photo_redirects_to_library(self):
+        """Test that after you create photo you are redirected to library."""
+        user = User.objects.all()[0]
+        self.client.force_login(user)
+        response = self.client.get(reverse('photo_add'))
+        html = soup(response.rendered_content, "html.parser")
+        token = html.findAll('input', {'name': "csrfmiddlewaretoken"})
+        image = SimpleUploadedFile(
+            name="testing.png",
+            content=open(MEDIA_ROOT + '/test/testing.png', 'rb').read(),
+            content_type="image/png"
+        )
+        info = {
+            'image': image,
+            'title': 'photo name',
+            'description': 'a description',
+            'published': 'PU',
+            'csrfmiddlewaretoken': token[0]['value']
+        }
+        response = self.client.post(
+            reverse('photo_add'),
+            info
+        )
+        self.assertTrue(response.status_code == 302)
+        self.assertTrue(response.url == '/images/library/1/1')
+
+    def test_after_album_create_redirects_to_library(self):
+        """Test that after you create album you are redirected to library."""
+        user = User.objects.all()[0]
+        self.client.force_login(user)
+        response = self.client.get(reverse('album_add'))
+        html = soup(response.rendered_content, "html.parser")
+        token = html.findAll('input', {'name': "csrfmiddlewaretoken"})
+        info = {
+            'title': 'album name',
+            'description': 'a description',
+            'published': 'PU',
+            'photos': [21, 22, 23],
+            'cover_photo': 21,
+            'csrfmiddlewaretoken': token[0]['value']
+        }
+        response = self.client.post(
+            reverse('album_add'),
+            info
+        )
+        self.assertTrue(response.status_code == 302)
+        self.assertTrue(response.url == '/images/library/1/1')
+
+    def test_required_fields_on_photo_create_must_be_filled(self):
+        """Test required fields are actually required in photo create."""
+        user = User.objects.all()[0]
+        self.client.force_login(user)
+        response = self.client.get(reverse('photo_add'))
+        html = soup(response.rendered_content, "html.parser")
+        token = html.findAll('input', {'name': "csrfmiddlewaretoken"})
+        info = {
+            'title': 'photo name',
+            'description': 'a description',
+            'csrfmiddlewaretoken': token[0]['value']
+        }
+        response = self.client.post(
+            reverse('photo_add'),
+            info
+        )
+        self.assertTrue(b'This field is required.' in response.content)
+
+    def test_required_fields_on_album_create_must_be_filled(self):
+        """Test required fields are actually required in album create."""
+        user = User.objects.all()[0]
+        self.client.force_login(user)
+        response = self.client.get(reverse('album_add'))
+        html = soup(response.rendered_content, "html.parser")
+        token = html.findAll('input', {'name': "csrfmiddlewaretoken"})
+        info = {
+            'title': 'album name',
+            'description': 'a description',
+            'csrfmiddlewaretoken': token[0]['value']
+        }
+        response = self.client.post(
+            reverse('album_add'),
+            info
+        )
+        self.assertTrue(b'This field is required.' in response.content)
