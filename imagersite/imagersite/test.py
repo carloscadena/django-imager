@@ -97,6 +97,7 @@ class RegistrationTests(TestCase):
         )
 
     def test_activation_key_activates_user(self):
+        """Test that that the activation key activates the user."""
         self.assertTrue(User.objects.count() == 0)
         response = self.client.get(reverse('registration_register'))
         html = BeautifulSoup(response.rendered_content, "html.parser")
@@ -129,7 +130,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
 class PhotoFactory(factory.django.DjangoModelFactory):
+    """Create Photos for tests."""
+
     class Meta:
+        """Model for Photo Factory."""
         model = Photo
 
     title = factory.Sequence(lambda n: "photo{}".format(n))
@@ -141,25 +145,30 @@ class PhotoFactory(factory.django.DjangoModelFactory):
 
 
 class HomePageTests(TestCase):
+    """Test the home page."""
 
     def setUp(self):
+        """Set up for home page tests."""
         self.client = Client()
         self.user = User(username='carl', email='carl@carl.carl')
         self.user.save()
 
     def add_photos(self):
+        """Build photos to test."""
         photos = [PhotoFactory.build() for _ in range(1)]
         for photo in photos:
             photo.profile = self.user.profile
             photo.save()
 
     def test_when_no_images_placeholder_appears(self):
+        """Test that before any images are uploaded a placeholder appears."""
         response = self.client.get(reverse_lazy('home'))
         html = BeautifulSoup(response.content, 'html.parser')
         # import pdb; pdb.set_trace()
         self.assertTrue(html.find('img', {'src': '/static/imagersite/testing.png'}))
 
     def test_when_images_exist_one_of_them_is_on_the_page(self):
+        """Test that if image exists, it displays."""
         self.add_photos()
         response = self.client.get(reverse_lazy('home'))
         html = BeautifulSoup(response.content, 'html.parser')
@@ -168,25 +177,30 @@ class HomePageTests(TestCase):
 
 
 class ProfilePageTests(TestCase):
+    """Test suite for the profile page."""
 
     def setUp(self):
+        """Set up for Profile page tests."""
         self.client = Client()
         self.user = User(username='carl', email='carl@carl.carl')
         self.user.set_password('bobloblaw')
         self.user.save()
 
     def test_user_profile_info_on_profile_page(self):
+        """Test that a user's profile info displays on page."""
         self.client.force_login(self.user)
         response = self.client.get(reverse_lazy('profile', kwargs={'username': 'carl'}))
         self.assertTrue(b'<p>Username: carl</p>' in response.content)
 
     def test_user_profile_page_has_link_to_library_page(self):
+        """Test that profile page has a link to the library page."""
         self.client.force_login(self.user)
         response = self.client.get(reverse_lazy('profile', kwargs={'username': 'carl'}))
         html = BeautifulSoup(response.content, 'html.parser')
-        self.assertTrue(html.find('a', {'href': '/images/library/'}))
+        self.assertTrue(html.find('a', {'href': '/images/library/1/1'}))
 
     def test_when_user_logs_in_redirect_to_profile_page(self):
+        """Test log in redirects to profile page."""
         response = self.client.post(reverse_lazy('login'), {
             'username': self.user.username, 'password': 'bobloblaw'
         }, follow=True)

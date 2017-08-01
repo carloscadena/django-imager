@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^profile/', include("imager_profile.urls")),
     url(r'^images/', include("imager_images.urls")),
     url(r'^api/v1/', include('imager_api.urls')),
+    url(r'^oauth/', include('social_django.urls', namespace='social'))
 ]
 
 

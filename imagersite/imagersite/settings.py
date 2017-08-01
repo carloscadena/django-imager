@@ -27,7 +27,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'secret')
 DEBUG = os.environ.get('DEBUG', False)
 
 # sorl thumb related
-TEMPLATE_DEBUG = DEBUG
 THUMBNAIL_FORCE_OVERWRITE = True
 
 ALLOWED_HOSTS = [
@@ -51,7 +50,10 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'storages',
     'rest_framework',
-    'imager_api.apps.ImagerApiConfig'
+    'imager_api.apps.ImagerApiConfig',
+    'taggit',
+    'social_django',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [
@@ -62,15 +64,33 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
-ROOT_URLCONF = 'imagersite.urls'
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'social_core.backends.github.GithubOAuth2',
+    'social_core.backends.twitter.TwitterOAuth',
+    'social_core.backends.facebook.FacebookOAuth2',
+
+)
+
+SOCIAL_AUTH_GITHUB_KEY = os.environ.get('SOCIAL_AUTH_GITHUB_KEY')
+SOCIAL_AUTH_GITHUB_SECRET = os.environ.get('SOCIAL_AUTH_GITHUB_SECRET')
+
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ]
 }
+
+SOCIAL_AUTH_TWITTER_KEY = os.environ.get('SOCIAL_AUTH_TWITTER_KEY')
+SOCIAL_AUTH_TWITTER_SECRET = os.environ.get('SOCIAL_AUTH_TWITTER_SECRET')
+
+ROOT_URLCONF = 'imagersite.urls'
+TEMPLATE_DEBUG = DEBUG
+
 
 TEMPLATES = [
     {
@@ -83,7 +103,10 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
+            'debug': DEBUG
         },
     },
 ]
