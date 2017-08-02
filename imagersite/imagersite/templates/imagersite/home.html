@@ -1,0 +1,23 @@
+{% extends 'imagersite/base.html' %}
+{% load staticfiles %}
+{% block nav-bar %}
+  <a href="{% url 'library' 1 1 %}" class="btn btn-primary btn-lg">Library</a>
+    {% if user.is_authenticated %}
+        <a href="{% url 'user_profile' %}" class="btn btn-primary btn-lg">{{ user.username }}</a>
+        <a href="{% url 'logout' %}" class="btn btn-primary btn-lg">Logout</a>
+    {% else %}
+        <a href="{% url 'registration_register' %}" class="btn btn-primary btn-lg">Register</a>
+        <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Login</a>
+    {% endif%}
+{% endblock %}
+
+{% block content %}
+<div class="col-sm-12">
+  {% if not random_image %}
+      <img src='{% static 'imagersite/testing.png' %}' alt="supersweethomepageimage" class="img-responsive">
+  {% else %}
+    <img src="{{ random_image.image.url }}" alt="" class="img-responsive">
+  {% endif%}
+
+</div>
+{% endblock %}

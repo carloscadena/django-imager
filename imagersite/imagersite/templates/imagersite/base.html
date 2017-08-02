@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+
+<html>
+    <head>
+        <title>Django Imager</title>
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.7/slate/bootstrap.min.css">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fancybox/3.1.20/jquery.fancybox.min.css">
+    </head>
+    <body>
+        {% block nav-bar %}{% endblock %}
+        <h1>Welcome to the Djang-a-Dang Imager</h1>
+        {% block content %}{% endblock %}
+    </body>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+    <script type="text/javascript" src="{% static 'script.js' %}"></script>
+
+</html>
