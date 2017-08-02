@@ -1,0 +1,58 @@
+{% extends "imagersite/base.html" %}
+{% load staticfiles %}
+{% load thumbnail %}
+
+
+{% block nav-bar %}
+<a href="{% url 'home' %}" class="btn btn-primary btn-lg">Home</a>
+<a href="{% url 'photos' 1 %}" class="btn btn-primary btn-lg">Photos</a>
+<a href="{% url 'library' 1 1 %}" class="btn btn-primary btn-lg">Library</a>
+{% if user.is_authenticated %}
+    <a href="{% url 'logout' %}" class="btn btn-primary btn-lg">Logout</a>
+    <a href="{% url 'user_profile' %}" class="btn btn-primary btn-lg">{{ user.username }}</a>
+{% else %}
+    <a href="{% url 'registration_register' %}" class="btn btn-primary btn-lg">Register</a>
+    <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Login</a>
+{% endif %}
+<a href="{% url 'album_add' %}" class="btn btn-primary btn-lg">Add Album</a>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="col-sm-12">
+    {% if albums.has_other_pages %}
+      <ul class="pagination">
+        {% if albums.has_previous %}
+          <li><a href="{% url 'albums' albums.previous_page_number %}">&laquo;</a></li>
+        {% else %}
+          <li class="disabled"><span>&laquo;</span></li>
+        {% endif %}
+        {% for i in albums.paginator.page_range %}
+          {% if albums.number == i %}
+            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+          {% else %}
+            <li><a href="{% url 'albums' i %}">{{ i }}</a></li>
+          {% endif %}
+        {% endfor %}
+        {% if albums.has_next %}
+          <li><a href="{% url 'albums' albums.next_page_number %}">&raquo;</a></li>
+        {% else %}
+          <li class="disabled"><span>&raquo;</span></li>
+        {% endif %}
+      </ul>
+    {% endif %}
+</div>
+
+<h3>All Publicly Available Albums</h3>
+    {% for album in albums %}
+      <div class="col-sm-6 col-md-2 col-lg-3 album">
+        <p>{{ album.title }}</p>
+        {% thumbnail album.cover_photo.image "200x200" as cover %}
+          <a href="{% url 'album' album.id 1 %}"><img src="{{ cover.url }}"></a>
+        {% empty %}
+          <img src='{% static 'imagersite/testing.png' %}'>
+        {% endthumbnail %}
+      </div>
+    {% endfor %}
+{% endblock %}
