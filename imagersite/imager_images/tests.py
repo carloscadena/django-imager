@@ -435,7 +435,6 @@ class PhotoAndAlbumTests(TestCase):
                 'album',
                 kwargs={'album_id': album_id, 'page_num': 1}),
         )
-        # import pdb; pdb.set_trace()
         self.assertTrue(b'album/' + str(album_id).encode(encoding='UTF-8') + b'/2' in response.content)
 
     def test_single_album_page_pagination_previous_set_of_three_photos(self):
@@ -625,3 +624,118 @@ class PhotoAndAlbumTests(TestCase):
             info
         )
         self.assertTrue(b'This field is required.' in response.content)
+
+# Test for editing models
+
+    def test_edit_button_on_shows_on_photo(self):
+        """Test edit button is available on each photo."""
+        user = User.objects.all()[0]
+        self.client.force_login(user)
+        response = self.client.get(reverse('photos', kwargs={'page_num': 1}))
+        self.assertTrue(b"Edit" in response.content)
+
+    def test_edit_button_on_shows_on_album(self):
+        """Test edit button is available on each album."""
+        user = User.objects.all()[0]
+        self.client.force_login(user)
+        album_id = Album.objects.all()[0].id
+        response = self.client.get(
+            reverse_lazy('album', kwargs={'album_id': album_id, 'page_num': 1})
+        )
+        self.assertTrue(b'Edit this album' in response.content)
+
+    def test_form_and_correct_fields_load_on_edit_photo(self):
+        """Test that the form and correct fields are avaiable on edit photo."""
+        user = User.objects.all()[0]
+        self.client.force_login(user)
+        photo_id = Album.objects.all()[0].photos.all()[0].id
+        response = self.client.get(
+            reverse('photo_edit', kwargs={'photo_id': photo_id})
+        )
+        html = soup(response.rendered_content, "html.parser")
+        form = html.findAll('form', {'enctype': "multipart/form-data"})
+        self.assertTrue(form)
+
+    def test_form_and_correct_fields_load_on_edit_album(self):
+        """Test that the form and correct fields are avaiable on edit album."""
+        user = User.objects.all()[0]
+        self.client.force_login(user)
+        album_id = Album.objects.all()[0].id
+        response = self.client.get(
+            reverse('album_edit', kwargs={'album_id': album_id})
+        )
+        html = soup(response.rendered_content, "html.parser")
+        form_title = html.findAll('input', {'id': "id_title"})
+        form_photos = html.findAll('input', {'name': "photos"})
+        self.assertTrue(form_title and form_photos)
+
+    def test_album_form_allows_user_to_add_existing_photos(self):
+        """Test that the users photos are available to add to an album."""
+        user = User.objects.all()[0]
+        self.client.force_login(user)
+        photo_id = Album.objects.all()[0].photos.all()[0].id
+        response = self.client.get(
+            reverse('album_edit', kwargs={'album_id': photo_id})
+        )
+        html = soup(response.rendered_content, "html.parser")
+        form_photos = html.findAll('input', {'name': "photos"})
+        self.assertTrue(len(form_photos) == 20)
+
+    def test_when_edit_photo_form_submitted_redirect_to_library(self):
+        """Test when a photo is edited the user is redirected to library."""
+        user = User.objects.all()[0]
+        self.client.force_login(user)
+        response = self.client.get(reverse('photo_add'))
+        html = soup(response.rendered_content, "html.parser")
+        token = html.findAll('input', {'name': "csrfmiddlewaretoken"})
+        photo_id = Album.objects.all()[0].photos.all()[0].id
+        info = {
+            'title': 'photo name',
+            'description': 'a description',
+            'published': 'PU',
+            'csrfmiddlewaretoken': token[0]['value']
+        }
+        response = self.client.post(
+            reverse('photo_edit', kwargs={'photo_id': photo_id}),
+            info
+        )
+        self.assertTrue(response.status_code == 302)
+        self.assertTrue(response.url == '/images/library/1/1')
+
+    def test_when_edit_album_form_submitted_redirect_to_library(self):
+        """Test when an album is edited the user is redirected to library."""
+        user = User.objects.all()[0]
+        self.client.force_login(user)
+        response = self.client.get(reverse('album_add'))
+        html = soup(response.rendered_content, "html.parser")
+        token = html.findAll('input', {'name': "csrfmiddlewaretoken"})
+        album_id = Album.objects.all()[0].id
+        one = html.findAll('option')[10]['value']
+        two = html.findAll('option')[11]['value']
+        three = html.findAll('option')[12]['value']
+        info = {
+            'title': 'album name',
+            'description': 'a description',
+            'published': 'PU',
+            'photos': [one, two, three],
+            'cover_photo': one,
+            'csrfmiddlewaretoken': token[0]['value']
+        }
+        response = self.client.post(
+            reverse('album_edit', kwargs={'album_id': album_id}),
+            info
+        )
+        self.assertTrue(response.status_code == 302)
+        self.assertTrue(response.url == '/images/library/1/1')
+
+    # def test_edit_profile_button_on_profile_page(self):
+    #     """Test the user can see an edit profile button on their profile."""
+    #
+    # def test_edit_profile_form_loads(self):
+    #     """Test that the edit profile route loads the correct form."""
+    #
+    # def test_edit_profile_form_also_shows_user_model_fields(self):
+    #     """Test that the user model fields show on edit profile form."""
+    #
+    # def test_when_profile_updated_redirect_to_profile(self):
+    #     """Test when profile is edited user is redirected to their profile."""
