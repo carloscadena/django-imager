@@ -160,11 +160,11 @@ class PhotoAndAlbumTests(TestCase):
     def test_album_view_incorrect_id_404s(self):
         """Test that an incorrect album ID redirects to the albums page."""
         response = self.client.get(
-            reverse('album', kwargs={'album_id': '23', 'page_num': 1}))
+            reverse('album', kwargs={'album_id': 10000000, 'page_num': 1}))
         self.assertTrue(response.status_code == 404)
 
     def test_album_names_display_on_library_page(self):
-        """Test that the album name displays with albums on library page."""
+        """Test that the album name -Infplays with albums on library page."""
         response = self.client.get(reverse(
             'library',
             kwargs={'album_page_num': 1, 'photo_page_num': 1})
@@ -526,13 +526,16 @@ class PhotoAndAlbumTests(TestCase):
         self.client.force_login(user)
         response = self.client.get(reverse('album_add'))
         html = soup(response.rendered_content, "html.parser")
+        one = html.findAll('option')[10]['value']
+        two = html.findAll('option')[11]['value']
+        three = html.findAll('option')[12]['value']
         token = html.findAll('input', {'name': "csrfmiddlewaretoken"})
         info = {
             'title': 'album name',
             'description': 'a description',
             'published': 'PU',
-            'photos': [1, 2, 3],
-            'cover_photo': 1,
+            'photos': [one, two, three],
+            'cover_photo': one,
             'csrfmiddlewaretoken': token[0]['value']
         }
         response = self.client.post(
@@ -574,13 +577,16 @@ class PhotoAndAlbumTests(TestCase):
         self.client.force_login(user)
         response = self.client.get(reverse('album_add'))
         html = soup(response.rendered_content, "html.parser")
+        one = html.findAll('option')[10]['value']
+        two = html.findAll('option')[11]['value']
+        three = html.findAll('option')[12]['value']
         token = html.findAll('input', {'name': "csrfmiddlewaretoken"})
         info = {
             'title': 'album name',
             'description': 'a description',
             'published': 'PU',
-            'photos': [21, 22, 23],
-            'cover_photo': 21,
+            'photos': [one, two, three],
+            'cover_photo': one,
             'csrfmiddlewaretoken': token[0]['value']
         }
         response = self.client.post(
