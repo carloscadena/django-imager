@@ -673,9 +673,9 @@ class PhotoAndAlbumTests(TestCase):
         """Test that the users photos are available to add to an album."""
         user = User.objects.all()[0]
         self.client.force_login(user)
-        photo_id = Album.objects.all()[0].photos.all()[0].id
+        album_id = Album.objects.all()[0].id
         response = self.client.get(
-            reverse('album_edit', kwargs={'album_id': photo_id})
+            reverse('album_edit', kwargs={'album_id': album_id})
         )
         html = soup(response.rendered_content, "html.parser")
         form_photos = html.findAll('input', {'name': "photos"})
@@ -727,15 +727,3 @@ class PhotoAndAlbumTests(TestCase):
         )
         self.assertTrue(response.status_code == 302)
         self.assertTrue(response.url == '/images/library/1/1')
-
-    # def test_edit_profile_button_on_profile_page(self):
-    #     """Test the user can see an edit profile button on their profile."""
-    #
-    # def test_edit_profile_form_loads(self):
-    #     """Test that the edit profile route loads the correct form."""
-    #
-    # def test_edit_profile_form_also_shows_user_model_fields(self):
-    #     """Test that the user model fields show on edit profile form."""
-    #
-    # def test_when_profile_updated_redirect_to_profile(self):
-    #     """Test when profile is edited user is redirected to their profile."""
